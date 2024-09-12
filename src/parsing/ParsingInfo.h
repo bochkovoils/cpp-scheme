@@ -2,8 +2,8 @@
 // Created by giantdad on 11.09.24.
 //
 
-#ifndef CPP_SCHEME_PARSINGCONTROL_H
-#define CPP_SCHEME_PARSINGCONTROL_H
+#ifndef CPP_SCHEME_PARSINGINFO_H
+#define CPP_SCHEME_PARSINGINFO_H
 
 #include "../tokens/Word.h"
 #include <vector>
@@ -14,7 +14,7 @@
 #include "OpenBracketParsingState.h"
 #include "CloseBracketParsingState.h"
 #include "IntegerParsingState.h"
-#include "ParsingControl.h"
+#include "ParsingInfo.h"
 
 enum ParsingMovement {
     TO_DEFAULT,
@@ -26,7 +26,7 @@ enum ParsingMovement {
     FINISH
 };
 
-class ParsingControl {
+class ParsingInfo {
 private:
     ParsingMovement                     _movement;
     int                                 _line_id;
@@ -42,7 +42,7 @@ private:
 
     ParsingState* get_state();
 public:
-    ParsingControl();
+    ParsingInfo();
 
     void set_movement(ParsingMovement movement);
     void set_line_id(int const& line_id);
@@ -54,4 +54,4 @@ public:
     [[nodiscard]] const char* position() const;
     void parse(std::string& str);
 };
-#endif //CPP_SCHEME_PARSINGCONTROL_H
+#endif //CPP_SCHEME_PARSINGINFO_H

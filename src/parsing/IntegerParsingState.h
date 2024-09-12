@@ -10,7 +10,7 @@
 
 class IntegerParsingState: public ParsingState {
 public:
-    void next(ParsingControl* state) override;
+    void next(ParsingInfo* state) override;
     bool is_terminated() override {return false;}
 };
 #endif //CPP_SCHEME_INTEGERPARSINGSTATE_H

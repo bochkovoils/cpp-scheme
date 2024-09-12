@@ -4,10 +4,10 @@
 #include <iostream>
 #include "CloseBracketParsingState.h"
 #include "DefaultParsingState.h"
-#include "ParsingControl.h"
+#include "ParsingInfo.h"
 #include "../tokens/CloseBracket.h"
 
-void CloseBracketParsingState::next(ParsingControl* state) {
+void CloseBracketParsingState::next(ParsingInfo* state) {
     const char* cur = state->position();
     if(*cur != ')') {
         std::cout << ")" << std::endl;

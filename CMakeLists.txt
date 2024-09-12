@@ -19,4 +19,32 @@ add_executable(cpp_scheme
         src/parsing/CloseBracketParsingState.h
         src/parsing/CloseBracketParsingState.cpp
         src/tokens/CloseBracket.h
-        src/parsing/IntegerParsingState.h src/parsing/IntegerParsingState.cpp src/parsing/ParsingControl.h src/parsing/ParsingControl.cpp)
+        src/parsing/IntegerParsingState.h
+        src/parsing/IntegerParsingState.cpp
+        src/parsing/ParsingInfo.h
+        src/parsing/ParsingInfo.cpp
+        src/parsing/rules/ParsingRule.cpp
+        src/parsing/rules/ParsingRule.h
+        src/parsing/text_handling/TextPointer.cpp
+        src/parsing/text_handling/TextPointer.h
+        src/parsing/rules/ExceptSymbolsParsingRule.cpp
+        src/parsing/rules/ExceptSymbolsParsingRule.h
+        src/tokens/Atom.cpp src/tokens/Atom.h
+        src/parsing/rules/SpanParsingRule.cpp
+        src/parsing/rules/SpanParsingRule.h
+        src/parsing/rules/StringEqParsingRule.cpp
+        src/parsing/rules/StringEqParsingRule.h
+        src/parsing/rules/RuleRepeatingParsingRule.cpp
+        src/parsing/rules/RuleRepeatingParsingRule.h
+        src/parsing/rules/SequentialParsingRule.cpp
+        src/parsing/rules/SequentialParsingRule.h
+        src/parsing/states/LeftBracketParser.cpp
+        src/parsing/states/LeftBracketParser.h
+        src/parsing/states/Parser.cpp
+        src/parsing/states/Parser.h
+        src/parsing/states/RightBracketParser.cpp
+        src/parsing/states/RightBracketParser.h
+        src/parsing/states/NumberParser.cpp
+        src/parsing/states/NumberParser.h
+        src/parsing/rules/OrParsingRule.cpp
+        src/parsing/rules/OrParsingRule.h src/parsing/states/StringParser.cpp src/parsing/states/StringParser.h)

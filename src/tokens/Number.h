@@ -12,7 +12,7 @@ class Number: public Word {
 private:
     int _value;
 public:
-    Number(int const& value): Word(TokenCode::NUMBER), _value(value) {}
+    explicit Number(int const& value): Word(TokenCode::NUMBER), _value(value) {}
     std::string to_string() override {return std::string("[Number ") + std::to_string(_value) + std::string("]");}
 };
 

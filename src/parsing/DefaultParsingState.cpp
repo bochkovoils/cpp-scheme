@@ -3,14 +3,14 @@
 //
 #include "DefaultParsingState.h"
 #include "EofState.h"
-#include "ParsingControl.h"
+#include "ParsingInfo.h"
 #include "OpenBracketParsingState.h"
 #include "CloseBracketParsingState.h"
 #include "IntegerParsingState.h"
-#include "ParsingControl.h"
+#include "ParsingInfo.h"
 #include <iostream>
 
-void DefaultParsingState::next(ParsingControl* state) {
+void DefaultParsingState::next(ParsingInfo* state) {
     for(;;) {
         auto _current = state->position();
         switch (*_current) {

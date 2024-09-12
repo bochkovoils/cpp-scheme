@@ -8,7 +8,7 @@
 #include "ParsingState.h"
 
 class DefaultParsingState: public ParsingState {
-    void next(ParsingControl* state) override;
+    void next(ParsingInfo* state) override;
     bool is_terminated() override {return false;}
 };
 #endif //CPP_SCHEME_DEFAULTPARSINGSTATE_H

@@ -10,11 +10,11 @@
 #include "../tokens/Word.h"
 #include <iostream>
 
-class ParsingControl;
+class ParsingInfo;
 
 class ParsingState {
 public:
-    virtual void next(ParsingControl* state) = 0;
+    virtual void next(ParsingInfo* state) = 0;
     virtual bool is_terminated() = 0;
 };
 

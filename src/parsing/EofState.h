@@ -9,7 +9,7 @@
 
 class EofState: public ParsingState {
 public:
-    void next(ParsingControl* words) override {throw this;}
+    void next(ParsingInfo* words) override {throw this;}
     bool is_terminated() override {return true;}
 };
 

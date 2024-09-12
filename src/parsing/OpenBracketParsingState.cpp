@@ -4,12 +4,12 @@
 
 #include "OpenBracketParsingState.h"
 #include "DefaultParsingState.h"
-#include "ParsingControl.h"
+#include "ParsingInfo.h"
 #include <exception>
 #include <iostream>
 #include "../tokens/OpenBracket.h"
 
-void OpenBracketParsingState::next(ParsingControl* state) {
+void OpenBracketParsingState::next(ParsingInfo* state) {
     const char* cur = state->position();
     if(*cur != '(') {
         std::cout << "(" << std::endl;

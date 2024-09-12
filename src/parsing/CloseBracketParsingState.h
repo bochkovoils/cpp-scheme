@@ -7,11 +7,11 @@
 
 #include "ParsingState.h"
 
-class ParsingControl;
+class ParsingInfo;
 
 class CloseBracketParsingState: public ParsingState {
 public:
-    void next(ParsingControl* state) override;
+    void next(ParsingInfo* state) override;
     bool is_terminated() override {return false;}
 };
 

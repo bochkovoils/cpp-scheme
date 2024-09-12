@@ -4,9 +4,9 @@
 
 #include "IntegerParsingState.h"
 #include "DefaultParsingState.h"
-#include "ParsingControl.h"
+#include "ParsingInfo.h"
 
-void IntegerParsingState::next(ParsingControl* state) {
+void IntegerParsingState::next(ParsingInfo* state) {
     bool is_positive = true;
     int result = 0;
     auto forward = state->position();
