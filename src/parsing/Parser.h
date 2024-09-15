@@ -43,7 +43,9 @@ public:
     void handle_opb(char &cursym);
     void handle_cpb(char &cursym);
 
-    void confirm_token(TokenId token_id);
+    void confirm_token(TokenId token_id, bool skip_body=false);
+
+    void handle_exit(char &cursym);
 };
 
 

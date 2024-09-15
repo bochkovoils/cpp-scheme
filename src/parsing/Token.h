@@ -14,7 +14,8 @@ enum TokenId {
     T_STRING,
     T_OPEN_BRACKET,
     T_CLOSE_BRACKET,
-    T_QUOTE
+    T_QUOTE,
+    T_EMPTY
 };
 
 class Token {

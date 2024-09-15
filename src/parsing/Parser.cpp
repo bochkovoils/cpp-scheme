@@ -2,6 +2,7 @@
 // Created by giantdad on 13.09.24.
 //
 
+#include <iostream>
 #include "Parser.h"
 
 
@@ -18,9 +19,13 @@ void Parser::next_char() {
     else if(cursym == '\'')                                 this->handle_quote(cursym);
     else if(cursym == '(')                                  this->handle_opb(cursym);
     else if(cursym == ')')                                  this->handle_cpb(cursym);
-    else if(cursym == '\0')                                 return;
+    else if(cursym == '\0')                                 this->handle_exit(cursym);
     else if(cursym == ';')                                  this->handle_comment_smb(cursym);
     else                                                    this->handle_symbol(cursym);
+    if(cursym == '\0') {
+        std::cout << "EXIT SYM" << std::endl;
+        return;
+    }
     _current_position++;
 }
 
@@ -44,7 +49,7 @@ void Parser::switch_to_skip(char &cursym) {
         case SKIP:
             return;
         case COMMENT:
-            if(cursym == '\n') _state = SKIP;
+            if(cursym == '\n') { this->confirm_token(TokenId::T_EMPTY, true); _state = SKIP; }
             return;
     }
 }
@@ -69,6 +74,8 @@ void Parser::handle_quote(char& cursym) {
         case SKIP:
             this->confirm_token(TokenId::T_QUOTE);
             return;
+        case COMMENT:
+            break;
     }
 }
 
@@ -103,6 +110,8 @@ void Parser::handle_dq(char& cursym) {
         case SKIP:
             _state = STRING;
             return;
+        case COMMENT:
+            break;
     }
 }
 
@@ -121,6 +130,8 @@ void Parser::handle_symbol(char &cursym) {
         case TOKEN:
             _buffer.push_back(cursym);
             return;
+        case COMMENT:
+            break;
     }
 }
 
@@ -147,6 +158,8 @@ void Parser::handle_opb(char &cursym) {
             _tokens.emplace_back(TokenId::T_OPEN_BRACKET);
             _state = SKIP;
             return;
+        case COMMENT:
+            break;
     }
 }
 
@@ -172,11 +185,42 @@ void Parser::handle_cpb(char &cursym) {
             _tokens.emplace_back(TokenId::T_CLOSE_BRACKET);
             _state = SKIP;
             return;
+        case COMMENT:
+            break;
     }
 }
 
-void Parser::confirm_token(TokenId token_id) {
-    _tokens.emplace_back(token_id, _buffer);
+void Parser::handle_exit(char &cursym) {
+    switch (_state) {
+        case STRING:
+            this->confirm_token(TokenId::T_STRING);
+            return;
+        case STRING_BACKSLASH:
+            _buffer.push_back('\\');
+            this->confirm_token(TokenId::T_STRING);
+            return;
+        case SKIP:
+            this->confirm_token(TokenId::T_EMPTY);
+            _state = SKIP;
+            return;
+        case NUMBER:
+            this->confirm_token(TokenId::T_NUMBER);
+            _state = SKIP;
+            return;
+        case TOKEN:
+            this->confirm_token(TokenId::T_SYMBOL);
+            _state = SKIP;
+            return;
+        case COMMENT:
+            this->confirm_token(TokenId::T_EMPTY, true);
+            _state = SKIP;
+            return;
+    }
+}
+
+void Parser::confirm_token(TokenId token_id, bool skip_body) {
+    if(skip_body) _tokens.emplace_back(Token(token_id));
+    else _tokens.emplace_back(token_id, _buffer);
     _buffer.clear();
 }
 
@@ -190,7 +234,9 @@ Token Parser::next_token() {
     if(this->is_end())
         throw 1;
     else {
-        while(_tokens.empty()) this->next_char();
+        while(_tokens.empty()) {
+            this->next_char();
+        }
         return next_token();
     }
 }
@@ -212,10 +258,16 @@ void Parser::handle_comment_smb(char &cursym) {
             _buffer.push_back('\\');
             _buffer.push_back(cursym);
             return;
+        case NUMBER:
+            this->confirm_token(TokenId::T_NUMBER);
+            break;
+        case TOKEN:
+            this->confirm_token(TokenId::T_SYMBOL);
+            break;
         default:
-            _state = COMMENT;
-            return;
+            break;
     }
+    _state = COMMENT;
 }
 
 void Parser::handle_next_string(char &) {
