@@ -46,6 +46,8 @@ public:
     void confirm_token(TokenId token_id, bool skip_body=false);
 
     void handle_exit(char &cursym);
+
+    void handle_backslash(char &cursym);
 };
 
 

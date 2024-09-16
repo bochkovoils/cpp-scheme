@@ -16,6 +16,7 @@ void Parser::next_char() {
     if(cursym == ' ' || cursym == '\n' || cursym == '\t')   this->switch_to_skip(cursym);
     else if(cursym == '"')                                  this->handle_dq(cursym);
     else if('0' <= cursym && cursym <= '9')                 this->handle_number(cursym);
+    else if(cursym == '\\')                                 this->handle_backslash(cursym);
     else if(cursym == '\'')                                 this->handle_quote(cursym);
     else if(cursym == '(')                                  this->handle_opb(cursym);
     else if(cursym == ')')                                  this->handle_cpb(cursym);
@@ -41,6 +42,7 @@ void Parser::switch_to_skip(char &cursym) {
         case STRING_BACKSLASH:
             _buffer.push_back('\\');
             _buffer.push_back(cursym);
+            _state = STRING;
             return;
         case TOKEN:
             this->confirm_token(TokenId::T_SYMBOL);
@@ -66,6 +68,7 @@ void Parser::handle_quote(char& cursym) {
         case STRING_BACKSLASH:
             _buffer.push_back('\\');
             _buffer.push_back(cursym);
+            _state = STRING;
             return;
         case TOKEN:
             this->confirm_token(TokenId::T_SYMBOL);
@@ -93,7 +96,8 @@ void Parser::handle_number(char& cursym) {
 void Parser::handle_dq(char& cursym) {
     switch (_state) {
         case STRING:
-            _state = STRING_BACKSLASH;
+            this->confirm_token(TokenId::T_STRING);
+            _state = SKIP;
             return;
         case STRING_BACKSLASH:
             _buffer.push_back('"');
@@ -121,7 +125,6 @@ void Parser::handle_symbol(char &cursym) {
             _buffer.push_back(cursym);
             return;
         case STRING_BACKSLASH:
-            _buffer.push_back('\\');
             _buffer.push_back(cursym);
             return;
         case SKIP:
@@ -144,6 +147,7 @@ void Parser::handle_opb(char &cursym) {
         case STRING_BACKSLASH:
             _buffer.push_back('\\');
             _buffer.push_back(cursym);
+            _state = STRING;
             return;
         case SKIP:
             _tokens.emplace_back(TokenId::T_OPEN_BRACKET);
@@ -171,6 +175,7 @@ void Parser::handle_cpb(char &cursym) {
         case STRING_BACKSLASH:
             _buffer.push_back('\\');
             _buffer.push_back(cursym);
+            _state = STRING;
             return;
         case SKIP:
             _tokens.emplace_back(TokenId::T_CLOSE_BRACKET);
@@ -198,6 +203,7 @@ void Parser::handle_exit(char &cursym) {
         case STRING_BACKSLASH:
             _buffer.push_back('\\');
             this->confirm_token(TokenId::T_STRING);
+            _state = STRING;
             return;
         case SKIP:
             this->confirm_token(TokenId::T_EMPTY);
@@ -272,6 +278,32 @@ void Parser::handle_comment_smb(char &cursym) {
 
 void Parser::handle_next_string(char &) {
 
+}
+
+void Parser::handle_backslash(char &cursym) {
+    switch (_state) {
+        case STRING:
+            _state = STRING_BACKSLASH;
+            return;
+        case STRING_BACKSLASH:
+            _buffer.push_back('\\');
+            _buffer.push_back(cursym);
+            _state = STRING;
+            return;
+        case SKIP:
+            _buffer.push_back(cursym);
+            _state = TOKEN;
+            return;
+        case NUMBER:
+            _buffer.push_back(cursym);
+            _state = TOKEN;
+            return;
+        case TOKEN:
+            _buffer.push_back(cursym);
+            return;
+        case COMMENT:
+            return;
+    }
 }
 
 
