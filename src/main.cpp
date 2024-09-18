@@ -7,6 +7,8 @@
 #include <list>
 #include <chrono>
 #include "parsing/Parser.h"
+#include "parsing/TreeBuilder.h"
+#include "painters/TreePainter.h"
 
 
 int main() {
@@ -15,14 +17,8 @@ int main() {
         std::cout << line << std::endl;
         auto parser = Parser(line.c_str());
         auto res = std::list<Token>();
-        while(!parser.is_end() || parser.has_tokens()) {
-            res.emplace_back(parser.next_token());
-        };
-
-        std::for_each(res.begin(), res.end(), [](auto cell) {
-            std::cout << "TOKEN: " << cell.get_id() << " STR: " << cell.get_value() << std::endl;
-        });
-
+        auto node = TreeBuilder(&parser).parse_all();
+        TreePainter().paint_tree(node);
     }
     std::cout << "Bye!" << std::endl;
 }

@@ -20,14 +20,17 @@ enum TokenId {
 
 class Token {
 private:
-    TokenId     _id;
-    std::string _value;
+    TokenId                 _id;
+    std::string             _value;
+    unsigned int            _hash;
+    static std::hash<std::string > _hash_fn;
 public:
     Token(TokenId id, std::vector<char> const& value);
     explicit Token(TokenId id);
 
     [[nodiscard]] TokenId get_id() const {return _id;}
     [[nodiscard]] std::string const& get_value() const {return _value;}
+    [[nodiscard]] unsigned int hash() const {return _hash;}
 };
 
 

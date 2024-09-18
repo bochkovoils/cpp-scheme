@@ -150,17 +150,16 @@ void Parser::handle_opb(char &cursym) {
             _state = STRING;
             return;
         case SKIP:
-            _tokens.emplace_back(TokenId::T_OPEN_BRACKET);
+            this->confirm_token(TokenId::T_OPEN_BRACKET, true);
             return;
         case NUMBER:
             this->confirm_token(TokenId::T_NUMBER);
-            _tokens.emplace_back(TokenId::T_OPEN_BRACKET);
+            this->confirm_token(TokenId::T_OPEN_BRACKET, true);
             _state = SKIP;
             return;
         case TOKEN:
             this->confirm_token(TokenId::T_SYMBOL);
-            _tokens.emplace_back(TokenId::T_OPEN_BRACKET);
-            _state = SKIP;
+            this->confirm_token(TokenId::T_OPEN_BRACKET, true);
             return;
         case COMMENT:
             break;
@@ -178,16 +177,16 @@ void Parser::handle_cpb(char &cursym) {
             _state = STRING;
             return;
         case SKIP:
-            _tokens.emplace_back(TokenId::T_CLOSE_BRACKET);
+            this->confirm_token(TokenId::T_CLOSE_BRACKET, true);
             return;
         case NUMBER:
             this->confirm_token(TokenId::T_NUMBER);
-            _tokens.emplace_back(TokenId::T_CLOSE_BRACKET);
+            this->confirm_token(TokenId::T_CLOSE_BRACKET, true);
             _state = SKIP;
             return;
         case TOKEN:
             this->confirm_token(TokenId::T_SYMBOL);
-            _tokens.emplace_back(TokenId::T_CLOSE_BRACKET);
+            this->confirm_token(TokenId::T_CLOSE_BRACKET, true);
             _state = SKIP;
             return;
         case COMMENT:
@@ -232,10 +231,9 @@ void Parser::confirm_token(TokenId token_id, bool skip_body) {
 
 Token Parser::next_token() {
     if(!this->_tokens.empty()) {
-        auto it = this->_tokens.begin();
-        auto res = *it;
-        _tokens.erase(it);
-        return res;
+        auto it = this->_tokens.front();
+        _tokens.pop_front();
+        return it;
     }
     if(this->is_end())
         throw 1;
