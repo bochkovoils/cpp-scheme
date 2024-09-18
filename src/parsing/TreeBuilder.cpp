@@ -34,6 +34,7 @@ AbstractNode* TreeBuilder::parse_all() {
     }
     std::cout << "In varstack.top" << std::endl;
 //    std::cout << std::get<Token>(_varstack.top()).get_id() << std::endl;
+    if(_varstack.empty()) return nullptr;
     return _varstack.top();
 }
 

@@ -8,6 +8,10 @@
 #include "TreePainter.h"
 
 void TreePainter::paint_tree(AbstractNode *node) {
+    if(node == nullptr) {
+        std::cout << "Empty string" << std::endl;
+        return;
+    }
     auto collected = collect(node);
     std::for_each(collected.begin(), collected.end(), [this](auto re){
         int spaces = std::get<0>(re);

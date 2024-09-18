@@ -16,9 +16,13 @@ int main() {
     for(std::string line; std::getline(std::cin, line);) {
         std::cout << line << std::endl;
         auto parser = Parser(line.c_str());
-        auto res = std::list<Token>();
+        auto start = std::chrono::high_resolution_clock::now();
         auto node = TreeBuilder(&parser).parse_all();
+        auto stop = std::chrono::high_resolution_clock::now();
+
         TreePainter().paint_tree(node);
+
+        std::cout << "Time in microseconds: " << std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count() << std::endl;
     }
     std::cout << "Bye!" << std::endl;
 }
