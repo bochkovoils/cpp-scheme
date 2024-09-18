@@ -7,7 +7,7 @@
 
 
 #include "../parsing/AbstractNode.h"
-#include "../parsing/LispList.h"
+#include "../parsing/ElementsList.h"
 #include "../parsing/TreeBuilder.h"
 
 class TreePainter {
@@ -16,8 +16,8 @@ public:
 
 
     std::list<std::tuple<int, AbstractNode*>> collect(AbstractNode* node);
-    virtual std::string make_string(LispList* list);
-    virtual std::string make_string(Symbol* list);
+    virtual std::string make_string(ElementsList* list);
+    virtual std::string make_string(Atom* list);
     virtual std::string make_string(TokenWrapper* list);
     virtual std::string ms(AbstractNode* list);
     std::string get_spaces(unsigned int spaces);

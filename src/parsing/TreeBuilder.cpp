@@ -40,7 +40,7 @@ AbstractNode* TreeBuilder::parse_all() {
 
 void TreeBuilder::read_list() {
     std::list<AbstractNode*> resnodes;
-    auto node = new LispList();
+    auto node = new ElementsList();
 
     while (true) {
         auto back_val = _varstack.top();
@@ -55,13 +55,13 @@ void TreeBuilder::read_list() {
                 auto next_sym = resnodes.front();
                 resnodes.pop_front();
 
-                auto quoted = new LispList();
-                quoted->push_back(&Symbol::QUOTE_SYMBOL);
+                auto quoted = new ElementsList();
+                quoted->push_back(&Atom::QUOTE_SYMBOL);
                 quoted->push_back(next_sym);
 
                 resnodes.push_front(quoted);
             } else {
-                resnodes.push_front(new Symbol(token.get_value()));
+                resnodes.push_front(new Atom(token.get_value()));
             }
             delete back_val;
         } else {
@@ -77,7 +77,7 @@ void TreeBuilder::read_list() {
 }
 
 
-//Symbol *TreeBuilder::next() {
+//Atom *TreeBuilder::next() {
 //    if(_stack.empty()) {
 //
 //    }

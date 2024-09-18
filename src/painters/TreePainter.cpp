@@ -33,7 +33,7 @@ std::list<std::tuple<int, AbstractNode *>> TreePainter::collect(AbstractNode* no
         AbstractNode* node_ = std::get<1>(curnode);
         result.emplace_back(spaces, node_);
 
-        auto lst = dynamic_cast<LispList*>(node_);
+        auto lst = dynamic_cast<ElementsList*>(node_);
         if(lst != nullptr){
             int new_count = spaces + 4;
             auto start = lst->end();
@@ -47,11 +47,11 @@ std::list<std::tuple<int, AbstractNode *>> TreePainter::collect(AbstractNode* no
     return result;
 }
 
-std::string TreePainter::make_string(LispList *list) {
+std::string TreePainter::make_string(ElementsList *list) {
     return "LIST:";
 }
 
-std::string TreePainter::make_string(Symbol *list) {
+std::string TreePainter::make_string(Atom *list) {
     return std::string("SYMBOL: ") + list->get_text();
 }
 
@@ -68,8 +68,8 @@ std::string TreePainter::get_spaces(unsigned int spaces) {
 }
 
 std::string TreePainter::ms(AbstractNode *list) {
-    if(list->get_type() == AbstractNodeType::A_SYMBOL       ) return make_string(dynamic_cast<Symbol*      >(list));
-    if(list->get_type() == AbstractNodeType::LIST           ) return make_string(dynamic_cast<LispList*    >(list));
+    if(list->get_type() == AbstractNodeType::A_SYMBOL       ) return make_string(dynamic_cast<Atom*      >(list));
+    if(list->get_type() == AbstractNodeType::LIST           ) return make_string(dynamic_cast<ElementsList*    >(list));
     if(list->get_type() == AbstractNodeType::TOKEN_WRAPPER  ) return make_string(dynamic_cast<TokenWrapper*>(list));
     else throw 1;
 }

@@ -2,14 +2,14 @@
 // Created by work on 17.09.2024.
 //
 
-#ifndef CPP_SCHEME_LISPLIST_H
-#define CPP_SCHEME_LISPLIST_H
+#ifndef CPP_SCHEME_ELEMENTSLIST_H
+#define CPP_SCHEME_ELEMENTSLIST_H
 
 
 #include <list>
 #include "AbstractNode.h"
 
-class LispList: public AbstractNode {
+class ElementsList: public AbstractNode {
     typedef std::list<AbstractNode*>::iterator       iterator;
     typedef std::list<AbstractNode*>::const_iterator const_iterator;
 private:
@@ -28,4 +28,4 @@ public:
 };
 
 
-#endif //CPP_SCHEME_LISPLIST_H
+#endif //CPP_SCHEME_ELEMENTSLIST_H

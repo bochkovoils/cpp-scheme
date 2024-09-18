@@ -7,8 +7,8 @@
 
 
 #include "Parser.h"
-#include "Symbol.h"
-#include "LispList.h"
+#include "Atom.h"
+#include "ElementsList.h"
 #include <utility>
 #include <variant>
 #include <stack>

@@ -6,7 +6,9 @@
 #define CPP_SCHEME_LISPSTRING_H
 
 
-class LispString {
+#include "LispObject.h"
+
+class LispString: public LispObject {
 
 };
 
