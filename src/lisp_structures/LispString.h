@@ -9,7 +9,8 @@
 #include "LispObject.h"
 
 class LispString: public LispObject {
-
+public:
+    void apply_visitor(StructuresVisitor *visitor) override;
 };
 
 

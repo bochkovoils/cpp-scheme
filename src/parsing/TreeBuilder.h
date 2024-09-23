@@ -7,8 +7,7 @@
 
 
 #include "Parser.h"
-#include "Atom.h"
-#include "ElementsList.h"
+#include "../lisp_structures/LispObject.h"
 #include <utility>
 #include <variant>
 #include <stack>
@@ -20,28 +19,27 @@ enum TreeBuilderState {
     PARSING,
 };
 
-class TokenWrapper: public AbstractNode {
+class TokenWrapper: public LispObject {
 private:
     Token _token;
 public:
     explicit TokenWrapper(Token  token): _token(std::move(token)) {};
-    AbstractNodeType get_type() override {return AbstractNodeType::TOKEN_WRAPPER;}
     [[nodiscard]] Token const& get_token() const {return _token; }
+    void apply_visitor(StructuresVisitor *visitor) override { throw 1; }
 };
 
 class TreeBuilder {
 private:
     Parser* _parser{};
-    std::stack<AbstractNode*> _vstack;
-    std::stack<Token> _tstack;
-    std::stack<AbstractNode*> _varstack;
+    std::stack<LispObject*> _varstack;
 public:
     explicit TreeBuilder(Parser* parser);
 
     bool is_end();
-    AbstractNode* next();
+    LispObject* next();
 
-    AbstractNode* parse_all();
+    LispObject* parse_all();
+    LispObject* parse_primitive(Token const&);
 
     void read_list();
 };

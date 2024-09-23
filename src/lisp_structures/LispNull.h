@@ -19,7 +19,7 @@ private:
     static std::unique_ptr<LispNull> _instance;
 
     LispNull() = default;
-
+    void apply_visitor(StructuresVisitor *visitor) override;
 };
 
 

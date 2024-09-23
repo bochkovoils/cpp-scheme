@@ -3,5 +3,6 @@
 //
 
 #include "LispObject.h"
+#include "StructuresVisitor.h"
 
 LispObject::~LispObject() = default;
