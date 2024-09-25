@@ -27,5 +27,17 @@ add_executable(cpp_scheme
         src/lisp_structures/LispNull.h
         src/environment/Frame.cpp
         src/environment/Frame.h
-        src/lisp_structures/StructuresVisitor.cpp
-        src/lisp_structures/StructuresVisitor.h src/evaluation/Evaluator.cpp src/evaluation/Evaluator.h src/painters/StringPainter.cpp src/painters/StringPainter.h src/environment/Environment.cpp src/environment/Environment.h src/evaluation/SumOperation.cpp src/evaluation/SumOperation.h src/lisp_structures/LispOperation.cpp src/lisp_structures/LispOperation.h)
+        src/evaluation/Evaluator.cpp
+        src/evaluation/Evaluator.h
+        src/environment/Environment.cpp
+        src/environment/Environment.h
+        src/evaluation/SumOperation.cpp
+        src/evaluation/SumOperation.h
+        src/lisp_structures/LispOperation.cpp
+        src/lisp_structures/LispOperation.h
+        src/evaluation/Mapper.cpp
+        src/evaluation/Mapper.h
+        src/lisp_structures/LispObjectRef.cpp
+        src/lisp_structures/LispObjectRef.h
+        src/painters/StringMapper.cpp
+        src/painters/StringMapper.h src/painters/StructurePainter.cpp src/painters/StructurePainter.h src/evaluation/ListSupport.cpp src/evaluation/ListSupport.h src/evaluation/operations/LambdaEvaluation.cpp src/evaluation/operations/LambdaEvaluation.h)

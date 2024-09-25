@@ -19,11 +19,8 @@ bool TreeBuilder::is_end() {
     return _parser->is_end() && !_parser->has_tokens();
 }
 
-LispObject *TreeBuilder::next() {
-    return nullptr;
-}
 
-LispObject* TreeBuilder::parse_all() {
+LispObjectRef TreeBuilder::parse_all() {
     if(!_varstack.empty()) {
         return _varstack.top();
     }
@@ -34,24 +31,23 @@ LispObject* TreeBuilder::parse_all() {
             read_list();
         }
         else {
-            _varstack.push(new TokenWrapper(token));
+            _varstack.push(LispObjectRef(new TokenWrapper(token)));
         }
     }
 //    std::cout << "In varstack.top" << std::endl;
 //    std::cout << std::get<Token>(_varstack.top()).get_id() << std::endl;
-    if(_varstack.empty()) return nullptr;
+    if(_varstack.empty()) return {};
     return _varstack.top();
 }
 
 void TreeBuilder::read_list() {
-    std::list<LispObject*> resnodes;
+    std::list<LispObjectRef> resnodes;
 
     while (true) {
         auto back_val = _varstack.top();
-        if(dynamic_cast<TokenWrapper*>(back_val)) {
-            auto token = dynamic_cast<TokenWrapper*>(back_val)->get_token();
+        if(back_val.is<TokenWrapper>()) {
+            auto token = back_val.as<TokenWrapper>()->get_token();
             if(token.get_id() == TokenId::T_OPEN_BRACKET) {
-                delete back_val;
                 _varstack.pop();
                 break;
             }
@@ -59,14 +55,12 @@ void TreeBuilder::read_list() {
                 auto next_sym = resnodes.front();
                 resnodes.pop_front();
 
-                auto quoted = new LispCell(LispSymbol::quote,
-                                           new LispCell(next_sym, LispNull::get()));
+                auto quoted = make_list(LispSymbol::quote, next_sym);
 
                 resnodes.push_front(quoted);
             } else {
                 resnodes.push_front(parse_primitive(token));
             }
-            delete back_val;
         } else {
             resnodes.push_front(back_val);
         }
@@ -81,38 +75,13 @@ void TreeBuilder::read_list() {
     }
 }
 
-LispObject *TreeBuilder::parse_primitive(const Token &token) {
+LispObjectRef TreeBuilder::parse_primitive(const Token &token) {
     if(token.get_id() == TokenId::T_STRING)
-        return new LispString();
+        return LispObjectRef(new LispString(token.get_value()));
     if(token.get_id() == TokenId::T_NUMBER)
-        return new LispNumber(token.get_value());
+        return LispObjectRef(new LispNumber(token.get_value()));
     if(token.get_id() == TokenId::T_SYMBOL)
-        return new LispSymbol(token.get_value());
+        return LispObjectRef(new LispSymbol(token.get_value()));
     throw 1;
 }
 
-
-
-//Atom *TreeBuilder::next() {
-//    if(_stack.empty()) {
-//
-//    }
-//}
-//
-//bool TreeBuilder::is_end() {
-//    return _parser->is_end();
-//}
-//
-//AbstractNode *TreeBuilder::read_next() {
-//    auto token = _parser->next_token();
-//    if(token.get_id() == TokenId::T_EMPTY) return nullptr;
-//    if(token.get_id() == TokenId::T_OPEN_BRACKET) {
-//        _stack.push(token);
-//        reduce_list();
-//    }
-//}
-//
-//void TreeBuilder::reduce_list() {
-//}
-//
-//

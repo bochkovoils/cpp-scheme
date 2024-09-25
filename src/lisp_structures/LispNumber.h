@@ -13,13 +13,14 @@ class LispNumber: public LispObject {
 private:
     long long int _value;
 public:
-    LispNumber(std::string  value);
+    explicit LispNumber(std::string  value);
     LispNumber();
     long long int value() {return _value;}
     std::string get_value();
-    void apply_visitor(StructuresVisitor *visitor) override;
+    std::string to_string(StringMapper *mapper) override;
     LispNumber& operator+=(LispNumber const&);
     LispNumber& operator+=(long long int const&);
+    LispObjectId get_type() override { return LispObjectId::L_NUMBER; }
 };
 
 

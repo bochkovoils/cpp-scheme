@@ -8,11 +8,12 @@
 
 #include <string>
 #include "LispObject.h"
+#include "LispObjectRef.h"
 
 class LispSymbol: public LispObject {
 public:
     static const std::hash<std::string_view> hash;
-    static LispObject* quote;
+    static LispObjectRef quote;
 private:
     std::string _name;
 public:
@@ -20,7 +21,8 @@ public:
 
     std::string get_name();
     std::size_t get_hash();
-    void apply_visitor(StructuresVisitor *visitor) override;
+    std::string to_string(StringMapper *mapper) override;
+    LispObjectId get_type() override { return LispObjectId::L_SYMBOL; }
 };
 
 

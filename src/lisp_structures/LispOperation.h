@@ -14,9 +14,10 @@ class Evaluator;
 
 class LispOperation: public LispObject {
 public:
-    virtual LispSymbol* get_symbol()=0;
-    virtual LispObject* execute(LispObject* args, Evaluator* env)=0;
-    void apply_visitor(StructuresVisitor *visitor) override;
+    virtual LispObjectRef get_symbol()=0;
+    virtual LispObjectRef execute(LispObject* args, Evaluator* env)=0;
+    std::string to_string(StringMapper *mapper) override;
+    LispObjectId get_type() override { return LispObjectId::L_OPERATION; }
 };
 
 

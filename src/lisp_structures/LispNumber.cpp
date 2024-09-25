@@ -5,11 +5,7 @@
 #include "LispNumber.h"
 
 #include <utility>
-#include "StructuresVisitor.h"
 
-void LispNumber::apply_visitor(StructuresVisitor *visitor) {
-    return visitor->apply(this);
-}
 
 LispNumber::LispNumber(std::string value): _value() {
     for(auto it : value) {
@@ -33,4 +29,9 @@ LispNumber &LispNumber::operator+=(const LispNumber &n) {
 LispNumber &LispNumber::operator+=(const long long int &n) {
     _value += n;
     return *this;
+}
+
+#include "../painters/StringMapper.h"
+std::string LispNumber::to_string(StringMapper *mapper) {
+    return mapper->map(this);
 }

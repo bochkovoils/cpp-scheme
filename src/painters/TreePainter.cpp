@@ -8,22 +8,22 @@
 #include <set>
 #include "TreePainter.h"
 
-void TreePainter::paint_tree(LispObject *node) {
-    if(node == nullptr) {
-        std::cout << "Empty string" << std::endl;
+void TreePainter::paint(LispObjectRef ref) {
+    std::cout << "PARSING TREE:" << std::endl;
+    if(ref.empty()) {
+        std::cout << "Empty" << std::endl;
         return;
     }
-    collect(node);
+    collect(ref);
     std::for_each(_collect.begin(), _collect.end(), [this](auto re){
         int spaces = std::get<0>(re);
         auto node = std::get<1>(re);
-        node->apply_visitor(this);
-        std::cout << get_spaces(spaces) << _buffer_visitor << std::endl;
+        std::cout << get_spaces(spaces) << node->to_string(this) << std::endl;
     });
 }
 
-void TreePainter::collect(LispObject* node) {
-    _stack = std::stack<std::tuple<int, LispObject*>>();
+void TreePainter::collect(LispObjectRef& node) {
+    _stack = std::stack<std::tuple<int, LispObjectRef>>();
     _collect.clear();
 
     _stack.push(std::make_tuple(0, node));
@@ -32,12 +32,11 @@ void TreePainter::collect(LispObject* node) {
         _stack.pop();
 
         int spaces = std::get<0>(curnode);
-        LispObject* node_ = std::get<1>(curnode);
+        LispObjectRef node_ = std::get<1>(curnode);
         _collect.emplace_back(spaces, node_);
 
-        auto lst = dynamic_cast<LispCell*>(node_);
-        if(lst != nullptr){
-            auto collected = this->collect_list(lst);
+        if(node_.is<LispCell>()){
+            auto collected = this->collect_list(node_.as<LispCell>());
             int new_count = spaces + 4;
             auto start = collected.end();
             auto end = collected.begin();
@@ -57,22 +56,45 @@ std::string TreePainter::get_spaces(unsigned int spaces) {
     return ss.str();
 }
 
-std::list<LispObject*> TreePainter::collect_list(LispCell* cell) {
-    std::list<LispObject*> result;
+std::string TreePainter::map(LispSymbol *) {
+    return "SYMBOL";
+}
+
+std::string TreePainter::map(LispCell *) {
+    return "LIST";
+}
+
+std::string TreePainter::map(LispNumber *) {
+    return "NUMBER";
+}
+
+std::string TreePainter::map(LispString *) {
+    return "STRING";
+}
+
+std::string TreePainter::map(LispNull *) {
+    return "NULL";
+}
+
+std::string TreePainter::map(LispOperation *) {
+    return "OPERATION";
+}
+
+std::list<LispObjectRef> TreePainter::collect_list(LispCell* cell) {
+    std::list<LispObjectRef> result;
     std::set<LispObject*> visited;
 
     while (true) {
-        LispObject* head = cell->head();
-        LispObject* rest = cell->rest();
+        auto head = cell->head();
+        auto rest = cell->rest();
         result.push_back(head);
 
-        if(rest == LispNull::get()) break;
-        if(visited.count(rest) > 0) break;
+        if(rest.is<LispNull>()) break;
+        if(visited.count(cell) > 0) break;
         visited.insert(cell);
 
-        auto* next = dynamic_cast<LispCell*>(rest);
-        if(next) {
-            cell = next;
+        if(rest.is<LispCell>()) {
+            cell = rest.as<LispCell>();
         }
         else {
             result.push_back(rest);
@@ -80,24 +102,4 @@ std::list<LispObject*> TreePainter::collect_list(LispCell* cell) {
         }
     }
     return result;
-}
-
-void TreePainter::apply(LispNumber *n) {
-    _buffer_visitor = std::string("NUMBER: ") + n->get_value();
-}
-
-void TreePainter::apply(LispSymbol *s) {
-    _buffer_visitor = std::string("SYMBOL: ") + s->get_name() + std::string(" #:") + std::to_string(s->get_hash());
-}
-
-void TreePainter::apply(LispString *s) {
-    _buffer_visitor = std::string("STRING: ");
-}
-
-void TreePainter::apply(LispNull *) {
-    _buffer_visitor = std::string("NULL");
-}
-
-void TreePainter::apply(LispCell *) {
-    _buffer_visitor = std::string("LIST:");
 }

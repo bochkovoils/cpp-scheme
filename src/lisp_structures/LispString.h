@@ -9,8 +9,14 @@
 #include "LispObject.h"
 
 class LispString: public LispObject {
+private:
+    std::string _value;
 public:
-    void apply_visitor(StructuresVisitor *visitor) override;
+    LispString(std::string& s);
+    LispString(std::string const& s);
+    std::string get() {return _value;};
+    std::string to_string(StringMapper *mapper) override;
+    LispObjectId get_type() override { return LispObjectId::L_STRING; }
 };
 
 

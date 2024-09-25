@@ -8,18 +8,19 @@
 
 #include <memory>
 #include "LispObject.h"
+#include "LispObjectRef.h"
 
 class LispNull: public LispObject {
 public:
-    static LispNull* get() {
-        if(_instance == nullptr) _instance = std::move(std::unique_ptr<LispNull>(new LispNull()));
-        return _instance.get();
+    static LispObjectRef get() {
+        return _instance;
     }
 private:
-    static std::unique_ptr<LispNull> _instance;
+    static LispObjectRef _instance;
 
     LispNull() = default;
-    void apply_visitor(StructuresVisitor *visitor) override;
+    std::string to_string(StringMapper *mapper) override;
+    LispObjectId get_type() override { return LispObjectId::L_NULL; }
 };
 
 

@@ -11,12 +11,12 @@
 
 class Frame {
 private:
-    std::unordered_map<std::size_t, LispObject*> _map;
+    std::unordered_map<std::size_t, LispObjectRef> _map;
 public:
     std::size_t size() const;
-    bool has(LispSymbol* symbol) const;
-    void set_symbol(LispSymbol* symbol, LispObject* obj);
-    LispObject* get(LispSymbol* symbol);
+    bool has(LispObjectRef symbol) const;
+    void set_symbol(LispObjectRef symbol, LispObjectRef obj);
+    LispObjectRef get(LispObjectRef symbol);
 };
 
 

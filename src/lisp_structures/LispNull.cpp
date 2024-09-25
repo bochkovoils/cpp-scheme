@@ -3,10 +3,10 @@
 //
 
 #include "LispNull.h"
-#include "StructuresVisitor.h"
 
-void LispNull::apply_visitor(StructuresVisitor *visitor) {
-    return visitor->apply(this);
+
+#include "../painters/StringMapper.h"
+std::string LispNull::to_string(StringMapper *mapper) {
+    return mapper->map(this);
 }
-
-std::unique_ptr<LispNull> LispNull::_instance = nullptr;
+LispObjectRef LispNull::_instance = LispObjectRef(new LispNull());

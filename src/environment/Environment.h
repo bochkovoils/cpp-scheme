@@ -12,7 +12,7 @@
 
 class Environment {
 public:
-    static Environment* global_root;
+    static std::shared_ptr<Environment> global_root;
 private:
     std::list<std::shared_ptr<Frame>> _frames;
 public:
@@ -21,10 +21,10 @@ public:
                 std::list<std::shared_ptr<Frame>>::iterator begin,
                 std::list<std::shared_ptr<Frame>>::iterator end);
 
-    bool has(LispSymbol* symbol);
-    LispObject* get(LispSymbol* symbol);
-    void set(LispSymbol* symbol, LispObject* obj);
-    Environment* extend();
+    bool has(LispObjectRef symbol);
+    LispObjectRef get(LispObjectRef symbol);
+    void set(LispObjectRef symbol, LispObjectRef obj);
+    std::shared_ptr<Environment> extend();
 };
 
 

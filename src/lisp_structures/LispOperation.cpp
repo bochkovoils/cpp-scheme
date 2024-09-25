@@ -4,6 +4,7 @@
 
 #include "LispOperation.h"
 
-void LispOperation::apply_visitor(StructuresVisitor *visitor) {
-
+#include "../painters/StringMapper.h"
+std::string LispOperation::to_string(StringMapper *mapper) {
+    return mapper->map(this);
 }

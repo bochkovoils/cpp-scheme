@@ -6,7 +6,7 @@
 
 #include <memory>
 
-bool Environment::has(LispSymbol *symbol) {
+bool Environment::has(LispObjectRef symbol) {
     for(auto & frame : _frames) {
         if(frame->has(symbol)) {
             auto obj = frame->get(symbol);
@@ -17,13 +17,13 @@ bool Environment::has(LispSymbol *symbol) {
     return false;
 }
 
-LispObject* Environment::get(LispSymbol *symbol) {
+LispObjectRef Environment::get(LispObjectRef symbol) {
     if(has(symbol))
         return _frames.front()->get(symbol);
     throw 1;
 }
 
-void Environment::set(LispSymbol *symbol, LispObject *obj) {
+void Environment::set(LispObjectRef symbol, LispObjectRef obj) {
     _frames.front()->set_symbol(symbol, obj);
 }
 
@@ -33,12 +33,12 @@ Environment::Environment(const std::shared_ptr<Frame>& addition_frame,
     _frames.push_front(addition_frame);
 }
 
-Environment* Environment::extend() {
-    return new Environment{std::make_shared<Frame>(), _frames.begin(), _frames.end()};
+std::shared_ptr<Environment> Environment::extend() {
+    return std::make_shared<Environment>(std::make_shared<Frame>(), _frames.begin(), _frames.end());
 }
 
 Environment::Environment() {
     _frames.push_back(std::make_shared<Frame>());
 }
 
-Environment* Environment::global_root = new Environment();
+std::shared_ptr<Environment> Environment::global_root = std::make_shared<Environment>();

@@ -3,8 +3,14 @@
 //
 
 #include "LispString.h"
-#include "StructuresVisitor.h"
 
-void LispString::apply_visitor(StructuresVisitor *visitor) {
-    visitor->apply(this);
+#include "../painters/StringMapper.h"
+std::string LispString::to_string(StringMapper *mapper) {
+    return mapper->map(this);
+}
+
+LispString::LispString(std::string &s): _value(std::move(s)) {
+}
+
+LispString::LispString(std::string const&s): _value(s) {
 }

@@ -18,8 +18,8 @@ class SumOperation: public LispOperation {
 private:
     LispSymbol _symbol = LispSymbol("+");
 public:
-    LispSymbol* get_symbol() override { return &_symbol; }
-    LispObject* execute(LispObject* rest, Evaluator* env) override;
+//    LispSymbol* get_symbol() override { return &_symbol; }
+//    LispObject* execute(LispObject* rest, Evaluator* env) override;
 };
 
 

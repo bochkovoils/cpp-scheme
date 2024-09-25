@@ -11,25 +11,25 @@
 #include "../lisp_structures/LispString.h"
 #include "../lisp_structures/LispNumber.h"
 #include "../lisp_structures/LispSymbol.h"
-#include "../lisp_structures/StructuresVisitor.h"
+#include "StringMapper.h"
 
-class TreePainter: public StructuresVisitor {
+class TreePainter: public StringMapper {
 private:
-    std::stack<std::tuple<int, LispObject*>> _stack;
-    std::list<std::tuple<int, LispObject*>> _collect;
+    std::stack<std::tuple<int, LispObjectRef>> _stack;
+    std::list<std::tuple<int, LispObjectRef>> _collect;
     std::string                             _buffer_visitor;
 public:
-    void paint_tree(LispObject* node);
-
-    virtual void apply(LispSymbol*) override;
-    virtual void apply(LispNumber*) override;
-    virtual void apply(LispString*) override;
-    virtual void apply(LispCell*  ) override;
-    virtual void apply(LispNull*  ) override;
+    virtual std::string map(LispSymbol*);
+    virtual std::string map(LispCell*);
+    virtual std::string map(LispNumber*);
+    virtual std::string map(LispString*);
+    virtual std::string map(LispNull*);
+    virtual std::string map(LispOperation*);
 
     std::string get_spaces(unsigned int spaces);
-    void collect(LispObject* node);
-    std::list<LispObject*> collect_list(LispCell* node);
+    void collect(LispObjectRef& node);
+    std::list<LispObjectRef> collect_list(LispCell* node);
+    void paint(LispObjectRef ref);
 };
 
 

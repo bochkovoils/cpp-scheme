@@ -11,9 +11,7 @@
 
 class Evaluator {
 public:
-    LispObject* eval(LispObject* object, Environment* environment);
-
-    LispObject *eval(LispObject *object);
+    LispObjectRef eval(LispObjectRef obj, std::shared_ptr<Environment> env);
 };
 
 

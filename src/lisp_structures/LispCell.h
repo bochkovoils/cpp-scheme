@@ -8,27 +8,47 @@
 
 #include <list>
 #include "LispObject.h"
+#include "LispObjectRef.h"
+#include "LispNull.h"
+
+
 
 class LispCell: public LispObject {
 private:
-    LispObject* _head;
-    LispObject* _rest;
+    LispObjectRef _head;
+    LispObjectRef _rest;
 
 public:
-    static LispCell* from_list( std::list<LispObject*>::iterator begin,
-                                std::list<LispObject*>::iterator end);
+    static LispObjectRef from_list(std::list<LispObjectRef>::iterator begin,
+                                   std::list<LispObjectRef>::iterator end);
 
     LispCell();
-    LispCell(LispObject *, LispObject *);
+    LispCell(LispObjectRef, LispObjectRef);
 
-    LispObject* head();
-    LispObject* rest();
+    LispObjectRef head();
+    LispObjectRef rest();
 
-    void set_head(LispObject*);
-    void set_rest(LispObject*);
+    void set_head(LispObjectRef);
+    void set_rest(LispObjectRef);
 
-    void apply_visitor(StructuresVisitor *visitor) override;
+    std::string to_string(StringMapper *mapper) override;
+    LispObjectId get_type() override { return LispObjectId::L_CELL; }
+
 };
+
+
+template<typename... Types>
+inline LispObjectRef make_list(Types&... args);
+
+template<>
+inline LispObjectRef make_list() {
+    return LispNull::get();
+}
+
+template<typename First, typename... Types>
+LispObjectRef make_list(First& f, Types&... rest) {
+    return LispObjectRef(new LispCell(f, make_list(rest...)));
+}
 
 
 #endif //CPP_SCHEME_LISPCELL_H

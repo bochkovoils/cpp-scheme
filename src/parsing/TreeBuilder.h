@@ -8,6 +8,7 @@
 
 #include "Parser.h"
 #include "../lisp_structures/LispObject.h"
+#include "../lisp_structures/LispObjectRef.h"
 #include <utility>
 #include <variant>
 #include <stack>
@@ -25,21 +26,21 @@ private:
 public:
     explicit TokenWrapper(Token  token): _token(std::move(token)) {};
     [[nodiscard]] Token const& get_token() const {return _token; }
-    void apply_visitor(StructuresVisitor *visitor) override { throw 1; }
+    std::string to_string(StringMapper *mapper) override {throw 1;}
+    LispObjectId get_type() override {return LispObjectId::TRASH; }
 };
 
 class TreeBuilder {
 private:
     Parser* _parser{};
-    std::stack<LispObject*> _varstack;
+    std::stack<LispObjectRef> _varstack;
 public:
     explicit TreeBuilder(Parser* parser);
 
     bool is_end();
-    LispObject* next();
 
-    LispObject* parse_all();
-    LispObject* parse_primitive(Token const&);
+    LispObjectRef parse_all();
+    LispObjectRef parse_primitive(Token const&);
 
     void read_list();
 };
