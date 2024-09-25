@@ -40,4 +40,4 @@ add_executable(cpp_scheme
         src/lisp_structures/LispObjectRef.cpp
         src/lisp_structures/LispObjectRef.h
         src/painters/StringMapper.cpp
-        src/painters/StringMapper.h src/painters/StructurePainter.cpp src/painters/StructurePainter.h src/evaluation/ListSupport.cpp src/evaluation/ListSupport.h src/evaluation/operations/LambdaEvaluation.cpp src/evaluation/operations/LambdaEvaluation.h)
+        src/painters/StringMapper.h src/painters/StructurePainter.cpp src/painters/StructurePainter.h src/evaluation/ListSupport.cpp src/evaluation/ListSupport.h src/evaluation/operations/LambdaEvaluation.cpp src/evaluation/operations/LambdaEvaluation.h src/terminal/Terminal.cpp src/terminal/Terminal.h)
