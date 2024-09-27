@@ -14,3 +14,7 @@ LispString::LispString(std::string &s): _value(std::move(s)) {
 
 LispString::LispString(std::string const&s): _value(s) {
 }
+#include "../evaluation/Evaluator.h"
+LispObjectRef LispString::evaluate(Evaluator *evaluator) {
+    return evaluator->eval_object(this);
+}

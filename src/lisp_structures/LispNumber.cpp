@@ -35,3 +35,11 @@ LispNumber &LispNumber::operator+=(const long long int &n) {
 std::string LispNumber::to_string(StringMapper *mapper) {
     return mapper->map(this);
 }
+#include "../evaluation/Evaluator.h"
+LispObjectRef LispNumber::evaluate(Evaluator *evaluator) {
+    return evaluator->eval_object(this);
+}
+
+LispNumber::LispNumber(const size_t &value): _value(value) {
+
+}

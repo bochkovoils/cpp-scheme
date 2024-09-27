@@ -18,6 +18,7 @@ public:
     virtual LispObjectRef execute(LispObject* args, Evaluator* env)=0;
     std::string to_string(StringMapper *mapper) override;
     LispObjectId get_type() override { return LispObjectId::L_OPERATION; }
+    LispObjectRef evaluate(Evaluator *evaluator) override;
 };
 
 

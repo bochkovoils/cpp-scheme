@@ -6,20 +6,25 @@
 
 #include <utility>
 #include "../painters/StringMapper.h"
+#include "../parsing/SymbolicTable.h"
+
 std::string LispSymbol::to_string(StringMapper *mapper) {
     return mapper->map(this);
 }
 
 std::string LispSymbol::get_name() {
-    return _name;
+    return SymbolicTable::get().get_symbol(_id);
 }
 
-
-LispSymbol::LispSymbol(std::string name): _name(std::move(name)) {}
-
-LispObjectRef LispSymbol::quote = LispObjectRef(new LispSymbol("quote"));
+LispObjectRef LispSymbol::quote = LispObjectRef(new LispSymbol(SymbolicTable::get().insert("quote")));
 std::hash<std::string_view> const LispSymbol::hash = std::hash<std::string_view>();
 
-std::size_t LispSymbol::get_hash() {
-    return LispSymbol::hash(_name);
+#include "../evaluation/Evaluator.h"
+LispObjectRef LispSymbol::evaluate(Evaluator *evaluator) {
+    return evaluator->eval_object(this);
 }
+
+LispSymbol::LispSymbol(const size_t &id): _id(id) {
+
+}
+

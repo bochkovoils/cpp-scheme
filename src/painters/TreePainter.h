@@ -5,7 +5,7 @@
 #ifndef CPP_SCHEME_TREEPAINTER_H
 #define CPP_SCHEME_TREEPAINTER_H
 
-#include "../parsing/TreeBuilder.h"
+#include "../parsing/SyntaxParser.h"
 #include "../lisp_structures/LispNull.h"
 #include "../lisp_structures/LispCell.h"
 #include "../lisp_structures/LispString.h"

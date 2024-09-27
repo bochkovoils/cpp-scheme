@@ -8,6 +8,8 @@
 #include <string>
 
 class StringMapper;
+class Evaluator;
+class LispObjectRef;
 
 enum LispObjectId {
     TRASH=-1,
@@ -23,8 +25,9 @@ class LispObject {
 public:
     virtual ~LispObject();
 
-    virtual std::string to_string(StringMapper* mapper)=0;
-    virtual LispObjectId get_type()=0;
+    virtual std::string     to_string(StringMapper* mapper)=0;
+    virtual LispObjectId    get_type()=0;
+    virtual LispObjectRef   evaluate(Evaluator* evaluator)=0;
 };
 
 

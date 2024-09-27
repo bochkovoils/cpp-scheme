@@ -41,7 +41,7 @@ std::string StructurePainter::map(LispCell *c) {
 }
 
 std::string StructurePainter::map(LispSymbol *s) {
-    return s->get_name();
+    return std::string (s->get_name());
 }
 
 std::string StructurePainter::map(LispNumber *n) {
@@ -49,7 +49,7 @@ std::string StructurePainter::map(LispNumber *n) {
 }
 
 std::string StructurePainter::map(LispOperation *o) {
-    return std::string("#operation:") + o->get_symbol().as<LispSymbol>()->get_name();
+    return std::string("#operation:") + std::string(o->get_symbol().as<LispSymbol>()->get_name());
 }
 
 void StructurePainter::paint(LispObjectRef ref) {

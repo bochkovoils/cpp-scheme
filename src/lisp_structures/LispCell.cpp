@@ -35,4 +35,9 @@ std::string LispCell::to_string(StringMapper *mapper) {
 }
 
 
+#include "../evaluation/Evaluator.h"
+LispObjectRef LispCell::evaluate(Evaluator *evaluator) {
+    return evaluator->eval_object(this);
+}
+
 

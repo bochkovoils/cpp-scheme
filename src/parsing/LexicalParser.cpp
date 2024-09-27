@@ -3,16 +3,26 @@
 //
 
 #include <iostream>
-#include "Parser.h"
+#include <algorithm>
+#include <memory>
+#include "LexicalParser.h"
+#include "SymbolicTable.h"
 
 
-Parser::Parser(const char *string_ptr) : _current_position(string_ptr),
-                                         _state(ParserState::SKIP)
+LexicalParser::LexicalParser() : _state(LexicalParserState::SKIP)
 {
 }
 
-void Parser::next_char() {
-    char cursym = *_current_position;
+void LexicalParser::next_char(const char& cursym) {
+    auto prev_state = _state;
+    if(cursym == '\n') {
+        _cur_line++;
+        _cur_pos=0;
+    }
+    else {
+        _cur_pos++;
+    }
+
     if(cursym == ' ' || cursym == '\n' || cursym == '\t')   this->switch_to_skip(cursym);
     else if(cursym == '"')                                  this->handle_dq(cursym);
     else if('0' <= cursym && cursym <= '9')                 this->handle_number(cursym);
@@ -23,25 +33,28 @@ void Parser::next_char() {
     else if(cursym == '\0')                                 this->handle_exit(cursym);
     else if(cursym == ';')                                  this->handle_comment_smb(cursym);
     else                                                    this->handle_symbol(cursym);
+
     if(cursym == '\0') {
-        std::cout << "EXIT SYM" << std::endl;
+        _token_pos =0;
+        _token_line=0;
+        _cur_line =0;
+        _cur_pos=-1;
         return;
     }
-    _current_position++;
 }
 
-void Parser::switch_to_skip(char &cursym) {
+void LexicalParser::switch_to_skip(const char &sym) {
     switch (_state) {
         case NUMBER:
             this->confirm_token(TokenId::T_NUMBER);
             _state = SKIP;
             return;
         case STRING:
-            _buffer.push_back(cursym);
+            _buffer.push_back(sym);
             return;
         case STRING_BACKSLASH:
             _buffer.push_back('\\');
-            _buffer.push_back(cursym);
+            _buffer.push_back(sym);
             _state = STRING;
             return;
         case TOKEN:
@@ -51,12 +64,12 @@ void Parser::switch_to_skip(char &cursym) {
         case SKIP:
             return;
         case COMMENT:
-            if(cursym == '\n') { this->confirm_token(TokenId::T_EMPTY, true); _state = SKIP; }
+            if(sym == '\n') { this->confirm_token(TokenId::T_EMPTY, true); _state = SKIP; }
             return;
     }
 }
 
-void Parser::handle_quote(char& cursym) {
+void LexicalParser::handle_quote(const char &cursym) {
     switch (_state) {
         case NUMBER:
             this->confirm_token(TokenId::T_NUMBER);
@@ -75,6 +88,8 @@ void Parser::handle_quote(char& cursym) {
             this->confirm_token(TokenId::T_QUOTE);
             return;
         case SKIP:
+            _token_pos = _cur_pos;
+            _token_line = _cur_line;
             this->confirm_token(TokenId::T_QUOTE);
             return;
         case COMMENT:
@@ -82,10 +97,12 @@ void Parser::handle_quote(char& cursym) {
     }
 }
 
-void Parser::handle_number(char& cursym) {
+void LexicalParser::handle_number(const char &cursym) {
     switch (_state) {
         case SKIP:
-            _state = ParserState::NUMBER;
+            _token_pos = _cur_pos;
+            _token_line = _cur_line;
+            _state = LexicalParserState::NUMBER;
             _buffer.push_back(cursym);
             return;
         default:
@@ -93,7 +110,7 @@ void Parser::handle_number(char& cursym) {
     }
 }
 
-void Parser::handle_dq(char& cursym) {
+void LexicalParser::handle_dq(const char &cursym) {
     switch (_state) {
         case STRING:
             this->confirm_token(TokenId::T_STRING);
@@ -105,13 +122,15 @@ void Parser::handle_dq(char& cursym) {
             return;
         case NUMBER:
             this->confirm_token(TokenId::T_NUMBER);
-            _state = ParserState::STRING;
+            _state = LexicalParserState::STRING;
             _buffer.push_back(cursym);
             return;
         case TOKEN:
             _buffer.push_back(cursym);
             return;
         case SKIP:
+            _token_pos = _cur_pos;
+            _token_line = _cur_line;
             _state = STRING;
             return;
         case COMMENT:
@@ -119,7 +138,7 @@ void Parser::handle_dq(char& cursym) {
     }
 }
 
-void Parser::handle_symbol(char &cursym) {
+void LexicalParser::handle_symbol(const char &cursym) {
     switch (_state) {
         case STRING:
             _buffer.push_back(cursym);
@@ -128,8 +147,10 @@ void Parser::handle_symbol(char &cursym) {
             _buffer.push_back(cursym);
             return;
         case SKIP:
+            _token_pos = _cur_pos;
+            _token_line = _cur_line;
         case NUMBER:
-            _state = ParserState::TOKEN;
+            _state = LexicalParserState::TOKEN;
         case TOKEN:
             _buffer.push_back(cursym);
             return;
@@ -139,7 +160,7 @@ void Parser::handle_symbol(char &cursym) {
 }
 
 
-void Parser::handle_opb(char &cursym) {
+void LexicalParser::handle_opb(const char &cursym) {
     switch (_state) {
         case STRING:
             _buffer.push_back(cursym);
@@ -150,6 +171,8 @@ void Parser::handle_opb(char &cursym) {
             _state = STRING;
             return;
         case SKIP:
+            _token_pos = _cur_pos;
+            _token_line = _cur_line;
             this->confirm_token(TokenId::T_OPEN_BRACKET, true);
             return;
         case NUMBER:
@@ -166,7 +189,7 @@ void Parser::handle_opb(char &cursym) {
     }
 }
 
-void Parser::handle_cpb(char &cursym) {
+void LexicalParser::handle_cpb(const char &cursym) {
     switch (_state) {
         case STRING:
             _buffer.push_back(cursym);
@@ -177,6 +200,8 @@ void Parser::handle_cpb(char &cursym) {
             _state = STRING;
             return;
         case SKIP:
+            _token_pos = _cur_pos;
+            _token_line = _cur_line;
             this->confirm_token(TokenId::T_CLOSE_BRACKET, true);
             return;
         case NUMBER:
@@ -194,7 +219,7 @@ void Parser::handle_cpb(char &cursym) {
     }
 }
 
-void Parser::handle_exit(char &cursym) {
+void LexicalParser::handle_exit(const char &cursym) {
     switch (_state) {
         case STRING:
             this->confirm_token(TokenId::T_STRING);
@@ -205,7 +230,7 @@ void Parser::handle_exit(char &cursym) {
             _state = STRING;
             return;
         case SKIP:
-            this->confirm_token(TokenId::T_EMPTY);
+//            this->confirm_token(TokenId::T_EMPTY);
             _state = SKIP;
             return;
         case NUMBER:
@@ -217,43 +242,37 @@ void Parser::handle_exit(char &cursym) {
             _state = SKIP;
             return;
         case COMMENT:
-            this->confirm_token(TokenId::T_EMPTY, true);
+//            this->confirm_token(TokenId::T_EMPTY, true);
             _state = SKIP;
             return;
     }
 }
 
-void Parser::confirm_token(TokenId token_id, bool skip_body) {
-    if(skip_body) _tokens.emplace_back(Token(token_id));
-    else _tokens.emplace_back(token_id, _buffer);
+void LexicalParser::confirm_token(TokenId token_id, bool skip_body) {
+    if(token_id == TokenId::T_NUMBER) {
+        auto t = std::shared_ptr<Token>(new NumberToken(token_id,
+                                                        std::stoi(std::string(_buffer.begin(), _buffer.end())),
+                                                        _token_pos,
+                                                        _token_line));
+        emit(t);
+    }
+    else if(token_id == TokenId::T_SYMBOL) {
+        auto t = std::shared_ptr<Token>(new SymbolToken(token_id,
+                                                        SymbolicTable::get().insert(std::string(_buffer.begin(), _buffer.end())),
+                                                        _token_pos,
+                                                        _token_line));
+        emit(t);
+    }
+    else {
+        auto t = std::make_shared<Token>(token_id, _token_pos, _token_line);
+        emit(t);
+    }
+    _token_pos = _cur_pos;
+    _token_line = _cur_line;
     _buffer.clear();
 }
 
-Token Parser::next_token() {
-    if(!this->_tokens.empty()) {
-        auto it = this->_tokens.front();
-        _tokens.pop_front();
-        return it;
-    }
-    if(this->is_end())
-        throw 1;
-    else {
-        while(_tokens.empty()) {
-            this->next_char();
-        }
-        return next_token();
-    }
-}
-
-bool Parser::is_end() {
-    return *_current_position == '\0';
-}
-
-bool Parser::has_tokens() {
-    return !_tokens.empty();
-}
-
-void Parser::handle_comment_smb(char &cursym) {
+void LexicalParser::handle_comment_smb(const char &cursym) {
     switch (_state) {
         case STRING:
             _buffer.push_back(cursym);
@@ -274,11 +293,7 @@ void Parser::handle_comment_smb(char &cursym) {
     _state = COMMENT;
 }
 
-void Parser::handle_next_string(char &) {
-
-}
-
-void Parser::handle_backslash(char &cursym) {
+void LexicalParser::handle_backslash(const char &cursym) {
     switch (_state) {
         case STRING:
             _state = STRING_BACKSLASH;
@@ -304,5 +319,15 @@ void Parser::handle_backslash(char &cursym) {
     }
 }
 
+void LexicalParser::operator<<(const char *s) {
+    while (*s != '\0') {
+        next_char(*s);
+        s++;
+    }
+    next_char(*s);
+}
 
+void LexicalParser::operator<<(const std::string &s) {
+    (*this) << s.c_str();
+}
 

@@ -56,3 +56,32 @@ LispObjectRef Evaluator::eval(LispObjectRef obj, std::shared_ptr<Environment> en
     }
     return {};
 }
+
+
+LispObjectRef Evaluator::eval_object(LispSymbol* obj){
+    return {};
+}
+
+LispObjectRef Evaluator::eval_object(LispNumber* obj){
+    return {};
+}
+
+LispObjectRef Evaluator::eval_object(LispList* obj){
+    return {};
+}
+
+LispObjectRef Evaluator::eval_object(LispNull* obj){
+    return {};
+}
+
+LispObjectRef Evaluator::eval_object(LispCell* obj){
+    return {};
+}
+
+LispObjectRef Evaluator::eval_object(LispOperation* obj){
+    return {};
+}
+
+LispObjectRef Evaluator::eval_object(LispString* obj){
+    return {};
+}

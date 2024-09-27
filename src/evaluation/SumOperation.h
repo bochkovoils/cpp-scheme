@@ -13,10 +13,11 @@
 #include "../lisp_structures/LispCell.h"
 #include "../environment/Environment.h"
 #include "Evaluator.h"
+#include "../parsing/SymbolicTable.h"
 
 class SumOperation: public LispOperation {
 private:
-    LispSymbol _symbol = LispSymbol("+");
+    LispSymbol _symbol = LispSymbol(SymbolicTable::get().insert("+"));
 public:
 //    LispSymbol* get_symbol() override { return &_symbol; }
 //    LispObject* execute(LispObject* rest, Evaluator* env) override;

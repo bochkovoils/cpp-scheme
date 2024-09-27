@@ -10,6 +10,5 @@ void Terminal::echo(void) {
         if(!std::cin) {
             break;
         }
-        std::cin >> std::cout;
     }
 }

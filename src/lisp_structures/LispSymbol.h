@@ -15,14 +15,15 @@ public:
     static const std::hash<std::string_view> hash;
     static LispObjectRef quote;
 private:
-    std::string _name;
+    std::size_t _id;
 public:
-    explicit LispSymbol(std::string  name);
+    explicit LispSymbol(std::size_t const& id);
 
     std::string get_name();
-    std::size_t get_hash();
     std::string to_string(StringMapper *mapper) override;
     LispObjectId get_type() override { return LispObjectId::L_SYMBOL; }
+    std::size_t get_id() const { return _id; }
+    LispObjectRef evaluate(Evaluator *evaluator) override;
 };
 
 

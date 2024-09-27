@@ -2,15 +2,14 @@ cmake_minimum_required(VERSION 3.23)
 project(cpp_scheme)
 
 set(CMAKE_CXX_STANDARD 17)
-
 add_executable(cpp_scheme
         ./src/main.cpp
-        src/parsing/Parser.cpp
-        src/parsing/Parser.h
+        src/parsing/LexicalParser.cpp
+        src/parsing/LexicalParser.h
         src/parsing/Token.cpp
         src/parsing/Token.h
-        src/parsing/TreeBuilder.cpp
-        src/parsing/TreeBuilder.h
+        src/parsing/SyntaxParser.cpp
+        src/parsing/SyntaxParser.h
         src/painters/TreePainter.cpp
         src/painters/TreePainter.h
         src/lisp_structures/LispObject.cpp
@@ -40,4 +39,24 @@ add_executable(cpp_scheme
         src/lisp_structures/LispObjectRef.cpp
         src/lisp_structures/LispObjectRef.h
         src/painters/StringMapper.cpp
-        src/painters/StringMapper.h src/painters/StructurePainter.cpp src/painters/StructurePainter.h src/evaluation/ListSupport.cpp src/evaluation/ListSupport.h src/evaluation/operations/LambdaEvaluation.cpp src/evaluation/operations/LambdaEvaluation.h src/terminal/Terminal.cpp src/terminal/Terminal.h)
+        src/painters/StringMapper.h
+        src/painters/StructurePainter.cpp
+        src/painters/StructurePainter.h
+        src/evaluation/ListSupport.cpp
+        src/evaluation/ListSupport.h
+        src/evaluation/operations/LambdaEvaluation.cpp
+        src/evaluation/operations/LambdaEvaluation.h
+        src/terminal/Terminal.cpp
+        src/terminal/Terminal.h
+        src/parsing/Observer.cpp
+        src/parsing/Observer.h
+        src/parsing/LexemsLogger.cpp
+        src/parsing/LexemsLogger.h
+        src/erors/ExceedClosingBracketException.cpp
+        src/erors/ExceedClosingBracketException.h
+        src/erors/ExceptionsLogger.cpp
+        src/erors/ExceptionsLogger.h
+        src/parsing/ParsedTreeLogger.cpp
+        src/parsing/ParsedTreeLogger.h
+        src/lisp_structures/LispList.cpp
+        src/lisp_structures/LispList.h src/parsing/SymbolicTable.cpp src/parsing/SymbolicTable.h)

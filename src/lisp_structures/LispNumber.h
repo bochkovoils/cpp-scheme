@@ -14,6 +14,7 @@ private:
     long long int _value;
 public:
     explicit LispNumber(std::string  value);
+    explicit LispNumber(std::size_t const& value);
     LispNumber();
     long long int value() {return _value;}
     std::string get_value();
@@ -21,6 +22,7 @@ public:
     LispNumber& operator+=(LispNumber const&);
     LispNumber& operator+=(long long int const&);
     LispObjectId get_type() override { return LispObjectId::L_NUMBER; }
+    LispObjectRef evaluate(Evaluator *evaluator) override;
 };
 
 

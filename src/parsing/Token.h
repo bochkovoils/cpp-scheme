@@ -21,16 +21,48 @@ enum TokenId {
 class Token {
 private:
     TokenId                 _id;
-    std::string             _value;
-    unsigned int            _hash;
-    static std::hash<std::string > _hash_fn;
+    unsigned int            _code_pos;
+    unsigned int            _line_pos;
 public:
-    Token(TokenId id, std::vector<char> const& value);
+    explicit Token( TokenId id,
+                    unsigned int pos=0,
+                    unsigned int line=0);
     explicit Token(TokenId id);
 
     [[nodiscard]] TokenId get_id() const {return _id;}
-    [[nodiscard]] std::string const& get_value() const {return _value;}
-    [[nodiscard]] unsigned int hash() const {return _hash;}
+    [[nodiscard]] unsigned int get_position() const {return _code_pos;}
+    [[nodiscard]] unsigned int get_line() const {return _line_pos;}
+
+    virtual ~Token()=default;
+};
+
+class SymbolToken: public Token {
+private:
+    std::size_t _symbol_id;
+public:
+    SymbolToken(TokenId id,
+                std::size_t symbol_id,
+                unsigned int pos,
+                unsigned int line);
+
+    [[nodiscard]] std::string get_symbol() const;
+    [[nodiscard]] std::size_t get_symbol_id() const;
+};
+
+class NumberToken: public Token {
+private:
+    int _value;
+public:
+    NumberToken(TokenId id, int value, unsigned int pos, unsigned int line);
+    [[nodiscard]] int get_value() const;
+};
+
+class StringToken: public Token {
+private:
+    std::string _value;
+public:
+    StringToken(TokenId id, std::string value, unsigned int pos, unsigned int line);
+    [[nodiscard]] std::string get_string() const;
 };
 
 
