@@ -5,53 +5,45 @@
 #include <set>
 #include <sstream>
 #include <iostream>
+#include <algorithm>
 #include "StructurePainter.h"
+#include "../parsing/SyntaxTree.h"
 
-std::string StructurePainter::map(LispString *s) {
-    return std::string("\"") + s->get() + std::string("\"");
+std::string StructurePainter::upstring(std::vector<std::shared_ptr<SyntaxTree>>&& children) {
+    std::stringstream ss;
+    auto it = children.begin();
+    ss << "(" << get_string(*it);
+    std::for_each(++it, children.end(), [&ss, this](auto t){
+        ss << " " << get_string(t);
+    });
+    ss << ")";
+    return ss.str();
 }
 
-std::string StructurePainter::map(LispNull *) {
-    return "()";
-}
-
-std::string StructurePainter::map(LispCell *c) {
-    auto result = std::stringstream();
-    result << "(";
-    std::set<LispCell*> s;
-    while(true) {
-        auto head = c->head();
-        auto rest = c->rest();
-        result << head->to_string(this);
-        s.insert(c);
-
-        if(rest.is<LispCell>()) {
-            result << " ";
-            c = rest.as<LispCell>();
-        }
-        else if(rest.is<LispNull>()) {
-            result << ")";
-            return result.str();
-        }
-        else {
-            result << " . " << rest->to_string(this) << ")";
-            return result.str();
-        }
+std::string StructurePainter::get_string(std::shared_ptr<SyntaxTree> ref) {
+    switch (ref->get_id()) {
+        case SyntaxTreeId::ST_TOKEN:
+            return std::string("!!TOKEN#") + std::to_string(ref->bound_token()->get_id());
+        case SyntaxTreeId::ST_LIST:
+            return upstring(ref->children());
+        case SyntaxTreeId::ST_NULL:
+            return "()";
+        case SyntaxTreeId::ST_ATOM:
+            return get_primitive(ref->bound_token());
+        case SyntaxTreeId::ST_QUOTE:
+            return "quote";
     }
 }
 
-std::string StructurePainter::map(LispSymbol *s) {
-    return std::string (s->get_name());
-}
-
-std::string StructurePainter::map(LispNumber *n) {
-    return n->get_value();
-}
-
-std::string StructurePainter::map(LispOperation *o) {
-    return std::string("#operation:") + std::string(o->get_symbol().as<LispSymbol>()->get_name());
-}
-
-void StructurePainter::paint(LispObjectRef ref) {
-    std::cout << ref->to_string(this) << std::endl;
+std::string StructurePainter::get_primitive(std::shared_ptr<Token> ref) {
+    if(ref->get_id() == TokenId::T_SYMBOL) {
+        return dynamic_cast<SymbolToken*>(ref.get())->get_symbol();
+    }
+    if(ref->get_id() == TokenId::T_STRING) {
+        return std::string("\"") + dynamic_cast<StringToken*>(ref.get())->get_string() + std::string("\"");
+    }
+    if(ref->get_id() == TokenId::T_NUMBER) {
+        return std::to_string(dynamic_cast<NumberToken*>(ref.get())->get_value());
+    }
+    throw 1;
 }

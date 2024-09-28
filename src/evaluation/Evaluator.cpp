@@ -85,3 +85,7 @@ LispObjectRef Evaluator::eval_object(LispOperation* obj){
 LispObjectRef Evaluator::eval_object(LispString* obj){
     return {};
 }
+
+LispObjectRef Evaluator::trye(LispObjectRef obj) {
+    return LispObjectRef();
+}

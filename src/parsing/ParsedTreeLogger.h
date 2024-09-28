@@ -6,14 +6,16 @@
 #define CPP_SCHEME_PARSEDTREELOGGER_H
 
 
+#include <memory>
 #include "../lisp_structures/LispObjectRef.h"
 #include "Observer.h"
+#include "SyntaxTree.h"
 
-class ParsedTreeLogger: public Observer<LispObjectRef> {
+class ParsedTreeLogger: public Observer<std::shared_ptr<SyntaxTree>> {
 private:
-    std::vector<LispObjectRef> _objs;
+    std::vector<std::shared_ptr<SyntaxTree>> _objs;
 public:
-    void handle(LispObjectRef) override;
+    void handle(std::shared_ptr<SyntaxTree>) override;
 //    void show();
 //    void clear();
 };

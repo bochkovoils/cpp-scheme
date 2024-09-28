@@ -10,7 +10,7 @@
 #include "../lisp_structures/LispObject.h"
 #include "../environment/Environment.h"
 #include "../lisp_structures/LispNumber.h"
-#include "../lisp_structures/LispList.h"
+#include "../lisp_structures/special/LispList.h"
 #include "../lisp_structures/LispNull.h"
 #include "../lisp_structures/LispCell.h"
 #include "../lisp_structures/LispOperation.h"
@@ -18,7 +18,7 @@
 
 class Evaluator {
 private:
-//    std::stack<LispObjectRef>
+    std::stack<LispObjectRef> _stack;
 public:
     LispObjectRef eval_object(LispSymbol* obj);
     LispObjectRef eval_object(LispNumber* obj);
@@ -28,6 +28,7 @@ public:
     LispObjectRef eval_object(LispOperation* obj);
     LispObjectRef eval_object(LispString* obj);
 
+    LispObjectRef trye(LispObjectRef obj);
     LispObjectRef eval(LispObjectRef obj, std::shared_ptr<Environment> env);
 };
 

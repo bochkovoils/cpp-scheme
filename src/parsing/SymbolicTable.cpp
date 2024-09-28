@@ -10,8 +10,7 @@ bool SymbolicTable::contains(const std::string_view &s) {
 }
 
 std::size_t SymbolicTable::get_id(const std::string_view &s) {
-    if(!contains(s)) throw 1;
-    return _str2id[s.data()];
+    return insert(s);
 }
 
 std::size_t SymbolicTable::insert(const std::string_view &s) {

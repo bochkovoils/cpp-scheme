@@ -28,11 +28,8 @@ void SyntaxParser::accept(std::shared_ptr<Token> token) {
         token->get_id() != TokenId::T_CLOSE_BRACKET &&
         token->get_id() != TokenId::T_QUOTE) {
 
-        std::list<LispObjectRef> res;
-        res.push_front(parse_primitive(token));
-        collapse_quotes(res);
-        _varstack.push(res.front());
-
+        std::shared_ptr<SyntaxTree> res = collapse_quotes(parse_primitive(token));
+        _varstack.push(res);
         if(_varstack.size() == 1) {
             emit(_varstack.top());
             _varstack.pop();
@@ -40,22 +37,18 @@ void SyntaxParser::accept(std::shared_ptr<Token> token) {
     }
     else if(token->get_id() == TokenId::T_OPEN_BRACKET) {
         brackets++;
-        _varstack.push(LispObjectRef(new TokenWrapper(token)));
+        _varstack.push(std::make_shared<SyntaxTree>(SyntaxTreeId::ST_TOKEN, token));
     }
     else if(token->get_id() == TokenId::T_CLOSE_BRACKET) {
-        std::list<LispObjectRef> res;
-        read_list(*token);
-        res.push_front(_varstack.top());
-        _varstack.pop();
-        collapse_quotes(res);
-        _varstack.push(res.front());
+        auto lst = collapse_quotes(read_list(token));
+        _varstack.push(lst);
         if(_varstack.size() == 1) {
             emit(_varstack.top());
             _varstack.pop();
         }
     }
     else {
-        _varstack.push(LispObjectRef(new TokenWrapper(token)));
+        _varstack.push(std::make_shared<SyntaxTree>(SyntaxTreeId::ST_TOKEN, token));
     }
 }
 
@@ -63,68 +56,69 @@ void SyntaxParser::accept(std::shared_ptr<Token> token) {
 /*
  *
  */
-void SyntaxParser::read_list(Token const& t) {
-    std::list<LispObjectRef> resnodes;
+std::shared_ptr<SyntaxTree> SyntaxParser::read_list(std::shared_ptr<Token> t) {
+    std::list<std::shared_ptr<SyntaxTree>> resnodes;
 
     while (true) {
         if(_varstack.empty()) {
-            throw ExceedClosingBracketException(t);
+            throw ExceedClosingBracketException(*t);
         }
 
-        auto back_val = _varstack.top();
-        if(back_val.is<TokenWrapper>()) {
-            auto token = back_val.as<TokenWrapper>()->get_token();
-            if(token->get_id() == TokenId::T_OPEN_BRACKET) {
+        auto val = _varstack.top();
+        if(val->get_id() == ST_TOKEN) {
+            if(val->bound_token()->get_id() == TokenId::T_OPEN_BRACKET) {
                 _varstack.pop();
                 brackets--;
                 break;
             }
             else {
-                resnodes.push_front(parse_primitive(token));
+                resnodes.push_front(parse_primitive(val->bound_token()));
                 _varstack.pop();
             }
         } else {
-            resnodes.push_front(back_val);
+            resnodes.push_front(val);
             _varstack.pop();
         }
-        collapse_quotes(resnodes);
+
+        auto front = resnodes.front();
+        resnodes.pop_front();
+        resnodes.push_front(collapse_quotes(front));
     }
 
     if(resnodes.empty()) {
-        _varstack.push(LispNull::get());
+        return std::make_shared<SyntaxTree>(SyntaxTreeId::ST_NULL, t);
     }
     else {
-        _varstack.push(LispCell::from_list(resnodes.begin(), resnodes.end()));
+        return std::make_shared<SyntaxTree>(SyntaxTreeId::ST_LIST, t, resnodes.begin(), resnodes.end());
     }
 }
 
-LispObjectRef SyntaxParser::parse_primitive(std::shared_ptr<Token> token) {
-    if(token->get_id() == TokenId::T_STRING)
-        return LispObjectRef(new LispString(dynamic_cast<StringToken const*>(token.get())->get_string()));
-    if(token->get_id() == TokenId::T_NUMBER)
-        return LispObjectRef(new LispNumber(dynamic_cast<NumberToken const*>(token.get())->get_value()));
-    if(token->get_id() == TokenId::T_SYMBOL)
-        return LispObjectRef(new LispSymbol(dynamic_cast<SymbolToken const*>(token.get())->get_symbol_id()));
-    throw 1;
+std::shared_ptr<SyntaxTree> SyntaxParser::parse_primitive(std::shared_ptr<Token> token) {
+    return std::make_shared<SyntaxTree>(SyntaxTreeId::ST_ATOM, token);
 }
 
 void SyntaxParser::handle(std::shared_ptr<Token> t) {
     accept(t);
 }
 
-void SyntaxParser::collapse_quotes(std::list<LispObjectRef>& resnodes) {
+std::shared_ptr<SyntaxTree> SyntaxParser::collapse_quotes(std::shared_ptr<SyntaxTree> subtree) {
     while(!_varstack.empty()) {
-        if(_varstack.top().is<TokenWrapper>() && _varstack.top().as<TokenWrapper>()->get_token()->get_id() == TokenId::T_QUOTE) {
-            if(resnodes.empty()) throw 1;
-            auto next_sym = resnodes.front();
-            resnodes.pop_front();
-            auto quoted = make_list(LispSymbol::quote, next_sym);
-            resnodes.push_front(quoted);
+        auto token = _varstack.top()->bound_token();
+        if(token->get_id()==TokenId::T_QUOTE) {
             _varstack.pop();
+            auto res = std::list<std::shared_ptr<SyntaxTree>>{
+                std::make_shared<SyntaxTree>(SyntaxTreeId::ST_QUOTE, token),
+                subtree
+            };
+            subtree = std::make_shared<SyntaxTree>(SyntaxTreeId::ST_LIST,
+                                                   token,
+                                                   res.begin(),
+                                                   res.end());
         }
         else
-            return;
+            break;
     }
+    return subtree;
 }
 
 

@@ -263,6 +263,13 @@ void LexicalParser::confirm_token(TokenId token_id, bool skip_body) {
                                                         _token_line));
         emit(t);
     }
+    else if(token_id == TokenId::T_STRING) {
+        auto t = std::shared_ptr<Token>(new StringToken(token_id,
+                                                        std::string(_buffer.begin(), _buffer.end()),
+                                                        _token_pos,
+                                                        _token_line));
+        emit(t);
+    }
     else {
         auto t = std::make_shared<Token>(token_id, _token_pos, _token_line);
         emit(t);

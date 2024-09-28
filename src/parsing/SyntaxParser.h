@@ -9,31 +9,23 @@
 #include "LexicalParser.h"
 #include "../lisp_structures/LispObject.h"
 #include "../lisp_structures/LispObjectRef.h"
+#include "SyntaxTree.h"
 #include <utility>
 #include <variant>
 #include <stack>
 #include <memory>
 
-class TokenWrapper: public LispObject {
+class SyntaxParser: public Observer<std::shared_ptr<Token>>,
+                    public Observable<std::shared_ptr<SyntaxTree>> {
 private:
-    std::shared_ptr<Token> _token;
-public:
-    explicit TokenWrapper(std::shared_ptr<Token> token): _token(token) {};
-    [[nodiscard]] std::shared_ptr<Token> get_token() const {return _token; }
-    std::string to_string(StringMapper *mapper) override {throw 1;}
-    LispObjectId get_type() override {return LispObjectId::TRASH; }
-    LispObjectRef evaluate(Evaluator *evaluator) override {throw 1;}
-};
-
-class SyntaxParser: public Observer<std::shared_ptr<Token>>, public Observable<LispObjectRef> {
-private:
-    std::stack<LispObjectRef> _varstack;
+    std::stack<std::shared_ptr<SyntaxTree>> _varstack;
     int brackets = 0;
 
-    LispObjectRef parse_primitive(std::shared_ptr<Token>);
-    void read_list(Token const&);
+    std::shared_ptr<SyntaxTree> parse_primitive(std::shared_ptr<Token>);
+    std::shared_ptr<SyntaxTree> read_list(std::shared_ptr<Token> t);
+    std::shared_ptr<SyntaxTree> collapse_quotes(std::shared_ptr<SyntaxTree> tree);
+
     void accept(std::shared_ptr<Token>);
-    void collapse_quotes(std::list<LispObjectRef>& lst);
 public:
     explicit SyntaxParser();
     void handle(std::shared_ptr<Token>) override;

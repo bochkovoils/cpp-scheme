@@ -7,8 +7,8 @@
 #include "../painters/TreePainter.h"
 #include "../painters/StructurePainter.h"
 
-void ParsedTreeLogger::handle(LispObjectRef r) {
-    StructurePainter().paint(r);
+void ParsedTreeLogger::handle(std::shared_ptr<SyntaxTree> r) {
+    std::cout << StructurePainter().get_string(r) << std::endl;
 }
 
 //void ParsedTreeLogger::show() {

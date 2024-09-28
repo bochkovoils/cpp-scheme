@@ -16,6 +16,7 @@
 #include "parsing/ParsedTreeLogger.h"
 #include "erors/ExceedClosingBracketException.h"
 #include "erors/ExceptionsLogger.h"
+#include "semantic_parsing/Syntax2SemanticSubscriber.h"
 //#include <allegro.h>
 
 int main() {
@@ -24,10 +25,14 @@ int main() {
     LexemsLogger logger;
     ParsedTreeLogger ptl;
 
+    std::shared_ptr<SemanticParser> semp(new SemanticParser());
+    Syntax2SemanticSubscriber s2ss(semp);
+
     lp.subscribe(&logger);
     lp.subscribe(&sp);
 
     sp.subscribe(&ptl);
+    sp.subscribe(&s2ss);
 
     for(std::string s; std::getline(std::cin, s);) {
         try {

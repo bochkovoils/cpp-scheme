@@ -58,5 +58,31 @@ add_executable(cpp_scheme
         src/erors/ExceptionsLogger.h
         src/parsing/ParsedTreeLogger.cpp
         src/parsing/ParsedTreeLogger.h
-        src/lisp_structures/LispList.cpp
-        src/lisp_structures/LispList.h src/parsing/SymbolicTable.cpp src/parsing/SymbolicTable.h)
+        src/lisp_structures/special/LispList.cpp
+        src/lisp_structures/special/LispList.h
+        src/parsing/SymbolicTable.cpp
+        src/parsing/SymbolicTable.h
+        src/parsing/SyntaxTree.cpp
+        src/parsing/SyntaxTree.h
+        src/parsing/TreeTransformer.cpp
+        src/parsing/TreeTransformer.h
+        src/semantic_parsing/semantic_objects/Quote.cpp
+        src/semantic_parsing/semantic_objects/Quote.h
+        src/semantic_parsing/semantic_objects/LetS.cpp
+        src/semantic_parsing/semantic_objects/LetS.h
+        src/semantic_parsing/semantic_objects/DefineSymbol.cpp
+        src/semantic_parsing/semantic_objects/DefineSymbol.h
+        src/semantic_parsing/semantic_objects/Procedure.cpp
+        src/semantic_parsing/semantic_objects/Procedure.h
+        src/semantic_parsing/semantic_objects/If.cpp
+        src/semantic_parsing/semantic_objects/If.h
+        src/semantic_parsing/semantic_objects/Let.cpp
+        src/semantic_parsing/semantic_objects/Let.h
+        src/semantic_parsing/SemanticParser.cpp
+        src/semantic_parsing/SemanticParser.h
+        src/semantic_parsing/semantic_objects/SemanticObject.cpp
+        src/semantic_parsing/semantic_objects/SemanticObject.h
+        src/semantic_parsing/semantic_objects/Expression.cpp
+        src/semantic_parsing/semantic_objects/Expression.h
+        src/semantic_parsing/semantic_objects/DefineProcedure.cpp
+        src/semantic_parsing/semantic_objects/DefineProcedure.h src/semantic_parsing/Syntax2SemanticSubscriber.cpp src/semantic_parsing/Syntax2SemanticSubscriber.h src/semantic_parsing/SemanticLogger.cpp src/semantic_parsing/SemanticLogger.h src/semantic_parsing/semantic_objects/Number.cpp src/semantic_parsing/semantic_objects/Number.h src/semantic_parsing/semantic_objects/String.cpp src/semantic_parsing/semantic_objects/String.h src/semantic_parsing/semantic_objects/BoundVariable.cpp src/semantic_parsing/semantic_objects/BoundVariable.h)

@@ -7,17 +7,14 @@
 
 
 #include "StringMapper.h"
+#include "../parsing/SyntaxTree.h"
 
-class StructurePainter: public StringMapper {
+class StructurePainter {
+private:
+    std::string upstring(std::vector<std::shared_ptr<SyntaxTree>>&& children);
+    std::string get_primitive(std::shared_ptr<Token> ref);
 public:
-    virtual std::string map(LispSymbol*     );
-    virtual std::string map(LispCell*       );
-    virtual std::string map(LispNumber*     );
-    virtual std::string map(LispString*     );
-    virtual std::string map(LispNull*       );
-    virtual std::string map(LispOperation*  );
-
-    void paint(LispObjectRef ref);
+    std::string get_string(std::shared_ptr<SyntaxTree> ref);
 };
 
 
