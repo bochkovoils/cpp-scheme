@@ -37,13 +37,13 @@ std::string StructurePainter::get_string(std::shared_ptr<SyntaxTree> ref) {
 
 std::string StructurePainter::get_primitive(std::shared_ptr<Token> ref) {
     if(ref->get_id() == TokenId::T_SYMBOL) {
-        return dynamic_cast<SymbolToken*>(ref.get())->get_symbol();
+        return ref->get_symbol();
     }
     if(ref->get_id() == TokenId::T_STRING) {
-        return std::string("\"") + dynamic_cast<StringToken*>(ref.get())->get_string() + std::string("\"");
+        return std::string("\"") + ref->get_string() + std::string("\"");
     }
     if(ref->get_id() == TokenId::T_NUMBER) {
-        return std::to_string(dynamic_cast<NumberToken*>(ref.get())->get_value());
+        return std::to_string(ref->get_value());
     }
     throw 1;
 }

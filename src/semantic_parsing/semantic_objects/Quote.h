@@ -9,17 +9,16 @@
 #include <memory>
 #include "../../lisp_structures/LispObject.h"
 #include "../../lisp_structures/LispObjectRef.h"
-#include "../SemanticLogger.h"
+#include "SemanticObject.h"
 
-class Quote {
+class Quote: public SemanticObject {
 private:
     LispObjectRef   _obj;
 public:
     explicit Quote(LispObjectRef& obj): _obj(obj){};
 
     LispObjectRef get_object() { return _obj; }
-
-//    std::string apply_logger(SemanticLogger *logger);
+    std::string apply_logger(SemanticLogger *logger, std::string &spaces) override;
 };
 
 

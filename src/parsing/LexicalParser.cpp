@@ -250,24 +250,24 @@ void LexicalParser::handle_exit(const char &cursym) {
 
 void LexicalParser::confirm_token(TokenId token_id, bool skip_body) {
     if(token_id == TokenId::T_NUMBER) {
-        auto t = std::shared_ptr<Token>(new NumberToken(token_id,
-                                                        std::stoi(std::string(_buffer.begin(), _buffer.end())),
-                                                        _token_pos,
-                                                        _token_line));
+        auto t = std::make_shared<Token>(token_id,
+                                         std::stoi(std::string(_buffer.begin(), _buffer.end())),
+                                         _token_pos,
+                                         _token_line);
         emit(t);
     }
     else if(token_id == TokenId::T_SYMBOL) {
-        auto t = std::shared_ptr<Token>(new SymbolToken(token_id,
-                                                        SymbolicTable::get().insert(std::string(_buffer.begin(), _buffer.end())),
-                                                        _token_pos,
-                                                        _token_line));
+        auto t = std::make_shared<Token>(token_id,
+                                         std::size_t(SymbolicTable::get().insert(std::string(_buffer.begin(), _buffer.end()))),
+                                         _token_pos,
+                                         _token_line);
         emit(t);
     }
     else if(token_id == TokenId::T_STRING) {
-        auto t = std::shared_ptr<Token>(new StringToken(token_id,
-                                                        std::string(_buffer.begin(), _buffer.end()),
-                                                        _token_pos,
-                                                        _token_line));
+        auto t = std::make_shared<Token>(token_id,
+                                         std::string(_buffer.begin(), _buffer.end()),
+                                         _token_pos,
+                                         _token_line);
         emit(t);
     }
     else {

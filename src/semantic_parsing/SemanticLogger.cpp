@@ -45,3 +45,48 @@ std::string SemanticLogger::get(Expression *o, std::string &s) {
     });
     return ss.str();
 }
+
+std::string SemanticLogger::get(FnParameter *o, std::string &s) {
+    std::stringstream ss;
+    ss << s << "FN_PARAM: " << SymbolicTable::get().get_symbol(o->get_symbol_id()) << "\n";
+    return ss.str();
+}
+
+std::string SemanticLogger::get(DefineSymbol *o, std::string &s) {
+    std::string newspaces = s + "    ";
+    std::stringstream ss;
+    ss << s << "DEFSYM: " << SymbolicTable::get().get_symbol(o->get_symbol_id()) << "\n";
+    ss << o->get_eval_expression()->apply_logger(this, newspaces);
+    return ss.str();
+}
+
+std::string SemanticLogger::get(DefineProcedure *o, std::string &s) {
+    auto argspaces = s + "    ";
+    auto newspaces =  argspaces + "    ";
+    std::stringstream ss;
+    ss << s+"DEFPROC: " << SymbolicTable::get().get_symbol(o->get_symbol_id()) << "\n";
+    ss << o->get_procedure()->apply_logger(this, argspaces);
+    return ss.str();
+}
+
+std::string SemanticLogger::get(Procedure *o, std::string &s) {
+    auto argspaces = s + "    ";
+    auto newspaces =  argspaces + "    ";
+    std::stringstream ss;
+    ss << s << "PROCEDURE:\n";
+    ss << argspaces << "ISDOT: " << o->dot_notation() << "\n";
+    ss << argspaces << "PARAMETERS:\n";
+    auto params = o->parameters();
+    std::for_each(params.begin(), params.end(), [this, &ss, &newspaces](auto obj){
+        ss << obj->apply_logger(this, newspaces);
+    });
+    ss << argspaces << "BODY:\n";
+    ss << o->body()->apply_logger(this, newspaces);
+    return ss.str();
+}
+
+#include "../painters/InlinePainter.h"
+std::string SemanticLogger::get(Quote *o, std::string &s) {
+    InlinePainter sm;
+    return s + std::string("QUOTE: ") + o->get_object()->to_string(&sm) + "\n";
+}

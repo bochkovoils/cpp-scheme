@@ -9,6 +9,7 @@
 #include <memory>
 #include "semantic_objects/SemanticObject.h"
 #include "../parsing/SyntaxTree.h"
+#include "semantic_objects/Expression.h"
 
 class SemanticParser {
 public:
@@ -22,10 +23,14 @@ public:
     std::shared_ptr<SemanticObject> parse_null(std::shared_ptr<SyntaxTree> sharedPtr);
     std::shared_ptr<SemanticObject> parse_lets(std::vector<std::shared_ptr<SyntaxTree>>& vector1);
     std::shared_ptr<SemanticObject> parse_cond(std::vector<std::shared_ptr<SyntaxTree>>& vector1);
-    std::shared_ptr<SemanticObject> parse_expression(std::vector<std::shared_ptr<SyntaxTree>>& vector1,
+    std::shared_ptr<Expression>     parse_expression(std::vector<std::shared_ptr<SyntaxTree>>& vector1,
                                                      std::shared_ptr<Token> t);
+    std::shared_ptr<SemanticObject> parse_parameter(std::shared_ptr<SyntaxTree> ptr,
+                                                    std::shared_ptr<Token> t);
+    std::pair<std::vector<std::shared_ptr<SemanticObject>>, bool>
+    parse_parameters(std::vector<std::shared_ptr<SyntaxTree>>& params);
 
-    std::pair<std::vector<std::size_t>, bool> parse_parameters(std::vector<std::shared_ptr<SyntaxTree>>& params);
+
 };
 
 

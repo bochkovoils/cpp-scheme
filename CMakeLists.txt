@@ -64,8 +64,6 @@ add_executable(cpp_scheme
         src/parsing/SymbolicTable.h
         src/parsing/SyntaxTree.cpp
         src/parsing/SyntaxTree.h
-        src/parsing/TreeTransformer.cpp
-        src/parsing/TreeTransformer.h
         src/semantic_parsing/semantic_objects/Quote.cpp
         src/semantic_parsing/semantic_objects/Quote.h
         src/semantic_parsing/semantic_objects/LetS.cpp
@@ -85,4 +83,16 @@ add_executable(cpp_scheme
         src/semantic_parsing/semantic_objects/Expression.cpp
         src/semantic_parsing/semantic_objects/Expression.h
         src/semantic_parsing/semantic_objects/DefineProcedure.cpp
-        src/semantic_parsing/semantic_objects/DefineProcedure.h src/semantic_parsing/Syntax2SemanticSubscriber.cpp src/semantic_parsing/Syntax2SemanticSubscriber.h src/semantic_parsing/SemanticLogger.cpp src/semantic_parsing/SemanticLogger.h src/semantic_parsing/semantic_objects/Number.cpp src/semantic_parsing/semantic_objects/Number.h src/semantic_parsing/semantic_objects/String.cpp src/semantic_parsing/semantic_objects/String.h src/semantic_parsing/semantic_objects/BoundVariable.cpp src/semantic_parsing/semantic_objects/BoundVariable.h)
+        src/semantic_parsing/semantic_objects/DefineProcedure.h
+        src/semantic_parsing/Syntax2SemanticSubscriber.cpp
+        src/semantic_parsing/Syntax2SemanticSubscriber.h
+        src/semantic_parsing/SemanticLogger.cpp
+        src/semantic_parsing/SemanticLogger.h
+        src/semantic_parsing/semantic_objects/Number.cpp
+        src/semantic_parsing/semantic_objects/Number.h
+        src/semantic_parsing/semantic_objects/String.cpp
+        src/semantic_parsing/semantic_objects/String.h
+        src/semantic_parsing/semantic_objects/BoundVariable.cpp
+        src/semantic_parsing/semantic_objects/BoundVariable.h
+        src/semantic_parsing/semantic_objects/FnParameter.cpp
+        src/semantic_parsing/semantic_objects/FnParameter.h src/semantic_parsing/SyntaxTree2LispObjectMapper.cpp src/semantic_parsing/SyntaxTree2LispObjectMapper.h src/painters/InlinePainter.cpp src/painters/InlinePainter.h)

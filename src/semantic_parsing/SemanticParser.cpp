@@ -3,6 +3,7 @@
 //
 
 #include <algorithm>
+#include <memory>
 #include <utility>
 #include "SemanticParser.h"
 #include "../parsing/SymbolicTable.h"
@@ -11,21 +12,26 @@
 #include "semantic_objects/String.h"
 #include "semantic_objects/BoundVariable.h"
 #include "semantic_objects/Expression.h"
+#include "semantic_objects/FnParameter.h"
+#include "semantic_objects/DefineSymbol.h"
+#include "semantic_objects/DefineProcedure.h"
+#include "semantic_objects/Quote.h"
+#include "SyntaxTree2LispObjectMapper.h"
 
 std::shared_ptr<SemanticObject> SemanticParser::parse(std::shared_ptr<SyntaxTree> tree) {
     if(tree->get_id() == SyntaxTreeId::ST_ATOM) {
         switch (tree->bound_token()->get_id()) {
             case TokenId::T_NUMBER:
                 return std::shared_ptr<SemanticObject>(
-                        new Number(dynamic_cast<NumberToken*>(tree->bound_token().get())->get_value(),
+                        new Number(tree->bound_token()->get_value(),
                                    tree->bound_token()));
             case TokenId::T_STRING:
                 return std::shared_ptr<SemanticObject>(
-                        new String(dynamic_cast<StringToken*>(tree->bound_token().get())->get_string(),
+                        new String(tree->bound_token()->get_string(),
                                    tree->bound_token()));
             case TokenId::T_SYMBOL:
                 return std::shared_ptr<SemanticObject>(
-                        new BoundVariable(dynamic_cast<SymbolToken*>(tree->bound_token().get())->get_symbol_id(),
+                        new BoundVariable(tree->bound_token()->get_symbol_id(),
                                           tree->bound_token()));
             default:
                 throw 1;
@@ -43,23 +49,29 @@ std::shared_ptr<SemanticObject> SemanticParser::parse(std::shared_ptr<SyntaxTree
     throw 2;
 }
 
-std::shared_ptr<SemanticObject> SemanticParser::parse_quote(std::shared_ptr<SyntaxTree>) {
-    return std::shared_ptr<SemanticObject>();
+std::shared_ptr<SemanticObject> SemanticParser::parse_quote(std::shared_ptr<SyntaxTree> tree) {
+    if(tree->children().size() != 2) throw 20;
+    auto child = tree->children()[1];
+    auto child_ = SyntaxTree2LispObjectMapper().map(child.get());
+    return std::shared_ptr<SemanticObject>(new Quote(child_));
 }
 
 std::shared_ptr<SemanticObject> SemanticParser::parse_list(std::shared_ptr<SyntaxTree> tree) {
     auto children = tree->children();
+    if(children[0]->get_id() == SyntaxTreeId::ST_QUOTE)
+        return parse_quote(tree);
     if(children[0]->get_id() == SyntaxTreeId::ST_ATOM) {
         auto head = children[0];
-        if(dynamic_cast<NumberToken*>(head->bound_token().get()))
+        if(head->bound_token()->get_id() == TokenId::T_NUMBER)
             throw 3;
-        if(dynamic_cast<StringToken*>(head->bound_token().get()))
+        if(head->bound_token()->get_id() == TokenId::T_STRING)
             throw 4;
 
-        auto token_id = dynamic_cast<SymbolToken*>(head->bound_token().get())->get_symbol_id();
+        auto token_id = head->bound_token()->get_symbol_id();
         auto stable = SymbolicTable::get();
+        if(token_id == stable.get_id("quote")      ) return parse_quote(tree);
         if(token_id == stable.get_id("if")      ) return parse_if(children);
-        if(token_id == stable.get_id("define")  ) return parse_define(children);
+        if(token_id == stable.get_id("define")  ) return parse_define(children, head->bound_token());
         if(token_id == stable.get_id("let")     ) return parse_let(children);
         if(token_id == stable.get_id("let*")    ) return parse_lets(children);
         if(token_id == stable.get_id("cond")    ) return parse_cond(children);
@@ -82,9 +94,32 @@ std::shared_ptr<SemanticObject> SemanticParser::parse_if(std::vector<std::shared
     return std::shared_ptr<SemanticObject>(new If(parse(cond), parse(on_true)));
 }
 
-std::shared_ptr<SemanticObject> SemanticParser::parse_define(std::vector<std::shared_ptr<SyntaxTree>>& vector1,
+std::shared_ptr<SemanticObject> SemanticParser::parse_define(std::vector<std::shared_ptr<SyntaxTree>>& args,
                                                              std::shared_ptr<Token> t) {
-    throw 8;
+    if(args.size() < 3) throw 15;
+    auto init = args[1];
+    if(init->get_id() == SyntaxTreeId::ST_ATOM) {
+        if(args.size() > 3) throw 16;
+        if(init->bound_token()->get_id() != TokenId::T_SYMBOL) throw 17;
+
+        auto symbol_id = init->bound_token()->get_symbol_id();
+        auto exp = parse(args[2]);
+        return std::shared_ptr<SemanticObject>(new DefineSymbol(symbol_id, exp, std::move(t)));
+    }
+
+    if(init->get_id() != SyntaxTreeId::ST_LIST) throw 18;
+    auto symbols = init->children();
+    auto head = symbols[0];
+    if(head->get_id() != SyntaxTreeId::ST_ATOM || head->bound_token()->get_id() != TokenId::T_SYMBOL) throw 19;
+
+    auto params = std::vector<std::shared_ptr<SyntaxTree>>(symbols.begin()+1, symbols.end());
+    auto params_ = parse_parameters(params);
+
+    auto body = std::vector<std::shared_ptr<SyntaxTree>>(args.begin()+2, args.end());
+    auto body_ = parse_expression(body, t);
+    return std::shared_ptr<SemanticObject>(new DefineProcedure(head->bound_token()->get_symbol_id(),
+                                                                std::make_shared<Procedure>(body_, params_.first, params_.second),
+                                                                t));
 }
 
 std::shared_ptr<SemanticObject> SemanticParser::parse_let(std::vector<std::shared_ptr<SyntaxTree>>& vector1) {
@@ -103,24 +138,24 @@ std::shared_ptr<SemanticObject> SemanticParser::parse_cond(std::vector<std::shar
     throw 12;
 }
 
-std::shared_ptr<SemanticObject> SemanticParser::parse_expression(std::vector<std::shared_ptr<SyntaxTree>>& vector1, std::shared_ptr<Token> t) {
+std::shared_ptr<Expression> SemanticParser::parse_expression(std::vector<std::shared_ptr<SyntaxTree>>& vector1, std::shared_ptr<Token> t) {
     auto res = std::vector<std::shared_ptr<SemanticObject>>();
     std::for_each(vector1.begin(), vector1.end(), [this, &res](auto obj) {
         res.push_back(parse(obj));
     });
-    return std::shared_ptr<SemanticObject>(new Expression(res, std::move(t)));
+    return std::make_shared<Expression>(res, std::move(t));
 }
 
-std::pair<std::vector<std::size_t>, bool>
+std::pair<std::vector<std::shared_ptr<SemanticObject>>, bool>
 SemanticParser::parse_parameters(std::vector<std::shared_ptr<SyntaxTree>> &params) {
-    auto res = std::vector<std::size_t>();
+    auto res = std::vector<std::shared_ptr<SemanticObject>>();
     for(int i=0; i<params.size(); i++) {
         if(params[i]->get_id() != SyntaxTreeId::ST_ATOM)
             throw 13;
         if(params[i]->bound_token()->get_id() != TokenId::T_SYMBOL)
             throw 14;
 
-        auto token = dynamic_cast<SymbolToken*>(params[i]->bound_token().get());
+        auto token = params[i]->bound_token();
         if(token->get_symbol_id() == SymbolicTable::get().get_id(".")) {
             i++;
             if(i >= params.size())
@@ -131,10 +166,15 @@ SemanticParser::parse_parameters(std::vector<std::shared_ptr<SyntaxTree>> &param
                 throw 13;
             if(params[i]->bound_token()->get_id() != TokenId::T_SYMBOL)
                 throw 14;
-            res.push_back(params[i]);
+            res.push_back(parse_parameter(params[i], token));
             return std::make_pair(res, true);
         }
-        res.push_back(params[i]);
+        res.push_back(parse_parameter(params[i], token));
     }
     return std::make_pair(res, false);
+}
+
+std::shared_ptr<SemanticObject> SemanticParser::parse_parameter(std::shared_ptr<SyntaxTree> ptr,
+                                                                std::shared_ptr<Token> t) {
+    return std::shared_ptr<SemanticObject>(new FnParameter(ptr->bound_token()->get_symbol_id(), std::move(t)));
 }

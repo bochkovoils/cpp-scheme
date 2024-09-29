@@ -7,6 +7,7 @@
 
 
 #include <list>
+#include <vector>
 #include "LispObject.h"
 #include "LispObjectRef.h"
 #include "LispNull.h"
@@ -21,6 +22,8 @@ private:
 public:
     static LispObjectRef from_list(std::list<LispObjectRef>::iterator begin,
                                    std::list<LispObjectRef>::iterator end);
+    static LispObjectRef from_vector(std::vector<LispObjectRef>::iterator begin,
+                                     std::vector<LispObjectRef>::iterator end);
 
     LispCell();
     LispCell(LispObjectRef, LispObjectRef);

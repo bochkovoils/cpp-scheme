@@ -7,22 +7,25 @@
 
 
 #include <memory>
+#include <utility>
 #include <vector>
 #include "SemanticObject.h"
+#include "Expression.h"
 
 class Procedure: public SemanticObject {
 private:
-    std::vector<std::shared_ptr<SemanticObject>>    _body;
-    std::vector<std::size_t>                        _parameters;
+    std::shared_ptr<Expression>                     _body;
+    std::vector<std::shared_ptr<SemanticObject>>    _parameters;
     bool                                            _dot_notation;
 public:
-    explicit Procedure(std::vector<std::shared_ptr<SemanticObject>>& body,
-                       std::vector<std::size_t>& parameters,
-                       bool dot_notation=false): _body(body), _parameters(parameters), _dot_notation(dot_notation) {}
-    std::vector<std::shared_ptr<SemanticObject>>    body() {return _body;}
-    std::vector<std::size_t>                        parameters() {return _parameters;}
+    explicit Procedure(std::shared_ptr<Expression> body,
+                       std::vector<std::shared_ptr<SemanticObject>>& parameters,
+                       bool dot_notation=false): _body(std::move(body)), _parameters(parameters), _dot_notation(dot_notation) {}
+    std::shared_ptr<Expression>                     body() {return _body;}
+    std::vector<std::shared_ptr<SemanticObject>>    parameters() {return _parameters;}
     std::size_t                                     arity() {return _parameters.size();}
     bool                                            dot_notation() const {return _dot_notation;}
+    std::string apply_logger(SemanticLogger *logger, std::string &spaces) override;
 };
 
 

@@ -40,4 +40,22 @@ LispObjectRef LispCell::evaluate(Evaluator *evaluator) {
     return evaluator->eval_object(this);
 }
 
+LispObjectRef
+LispCell::from_vector(std::vector<LispObjectRef>::iterator begin, std::vector<LispObjectRef>::iterator end) {
+    if(begin == end) return LispObjectRef(new LispCell());
+
+    auto curit = begin;
+    auto result = LispObjectRef(new LispCell(*curit, LispNull::get()));
+    auto current = result;
+    curit++;
+
+    while (curit != end) {
+        auto next = LispObjectRef(new LispCell(*curit, LispNull::get()));
+        current.as<LispCell>()->_rest = MovRef{next};
+        current = MovRef{next};
+        curit++;
+    }
+    return result;
+}
+
 
