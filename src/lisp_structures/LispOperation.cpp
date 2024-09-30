@@ -8,8 +8,3 @@
 std::string LispOperation::to_string(StringMapper *mapper) {
     return mapper->map(this);
 }
-
-#include "../evaluation/Evaluator.h"
-LispObjectRef LispOperation::evaluate(Evaluator *evaluator) {
-    return evaluator->eval_object(this);
-}

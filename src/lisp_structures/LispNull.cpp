@@ -11,8 +11,3 @@ std::string LispNull::to_string(StringMapper *mapper) {
 }
 LispObjectRef LispNull::_instance = LispObjectRef(new LispNull());
 
-
-#include "../evaluation/Evaluator.h"
-LispObjectRef LispNull::evaluate(Evaluator *evaluator) {
-    return evaluator->eval_object(this);
-}

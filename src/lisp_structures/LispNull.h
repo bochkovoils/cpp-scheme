@@ -21,7 +21,6 @@ private:
     LispNull() = default;
     std::string to_string(StringMapper *mapper) override;
     LispObjectId get_type() override { return LispObjectId::L_NULL; }
-    LispObjectRef evaluate(Evaluator *evaluator) override;
 };
 
 

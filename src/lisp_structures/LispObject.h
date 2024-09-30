@@ -27,7 +27,6 @@ public:
 
     virtual std::string     to_string(StringMapper* mapper)=0;
     virtual LispObjectId    get_type()=0;
-    virtual LispObjectRef   evaluate(Evaluator* evaluator)=0;
 };
 
 

@@ -17,7 +17,6 @@ public:
     std::string get() {return _value;};
     std::string to_string(StringMapper *mapper) override;
     LispObjectId get_type() override { return LispObjectId::L_STRING; }
-    LispObjectRef evaluate(Evaluator *evaluator) override;
 };
 
 

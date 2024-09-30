@@ -22,7 +22,6 @@ public:
     LispNumber& operator+=(LispNumber const&);
     LispNumber& operator+=(long long int const&);
     LispObjectId get_type() override { return LispObjectId::L_NUMBER; }
-    LispObjectRef evaluate(Evaluator *evaluator) override;
 };
 
 

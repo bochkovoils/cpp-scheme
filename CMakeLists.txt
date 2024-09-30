@@ -26,26 +26,16 @@ add_executable(cpp_scheme
         src/lisp_structures/LispNull.h
         src/environment/Frame.cpp
         src/environment/Frame.h
-        src/evaluation/Evaluator.cpp
-        src/evaluation/Evaluator.h
         src/environment/Environment.cpp
         src/environment/Environment.h
-        src/evaluation/SumOperation.cpp
-        src/evaluation/SumOperation.h
         src/lisp_structures/LispOperation.cpp
         src/lisp_structures/LispOperation.h
-        src/evaluation/Mapper.cpp
-        src/evaluation/Mapper.h
         src/lisp_structures/LispObjectRef.cpp
         src/lisp_structures/LispObjectRef.h
         src/painters/StringMapper.cpp
         src/painters/StringMapper.h
         src/painters/StructurePainter.cpp
         src/painters/StructurePainter.h
-        src/evaluation/ListSupport.cpp
-        src/evaluation/ListSupport.h
-        src/evaluation/operations/LambdaEvaluation.cpp
-        src/evaluation/operations/LambdaEvaluation.h
         src/terminal/Terminal.cpp
         src/terminal/Terminal.h
         src/parsing/Observer.cpp
@@ -95,4 +85,4 @@ add_executable(cpp_scheme
         src/semantic_parsing/semantic_objects/BoundVariable.cpp
         src/semantic_parsing/semantic_objects/BoundVariable.h
         src/semantic_parsing/semantic_objects/FnParameter.cpp
-        src/semantic_parsing/semantic_objects/FnParameter.h src/semantic_parsing/SyntaxTree2LispObjectMapper.cpp src/semantic_parsing/SyntaxTree2LispObjectMapper.h src/painters/InlinePainter.cpp src/painters/InlinePainter.h)
+        src/semantic_parsing/semantic_objects/FnParameter.h src/semantic_parsing/SyntaxTree2LispObjectMapper.cpp src/semantic_parsing/SyntaxTree2LispObjectMapper.h src/painters/InlinePainter.cpp src/painters/InlinePainter.h src/machine/VirtualMachine.cpp src/machine/VirtualMachine.h src/machine/StackFrame.cpp src/machine/StackFrame.h src/machine/ByteCode.cpp src/machine/ByteCode.h src/machine/CodePrinter.cpp src/machine/CodePrinter.h src/machine/OpcodeObject.cpp src/machine/OpcodeObject.h)

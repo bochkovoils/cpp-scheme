@@ -23,7 +23,6 @@ public:
     std::string to_string(StringMapper *mapper) override;
     LispObjectId get_type() override { return LispObjectId::L_SYMBOL; }
     std::size_t get_id() const { return _id; }
-    LispObjectRef evaluate(Evaluator *evaluator) override;
 };
 
 
