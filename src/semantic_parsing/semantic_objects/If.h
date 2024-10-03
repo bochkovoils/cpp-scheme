@@ -27,6 +27,7 @@ public:
     std::shared_ptr<SemanticObject> on_false();
 
     std::string apply_logger(SemanticLogger* logger, std::string& spaces) override;
+    SEMANTIC_WALKER_VISITOR_WALK
 };
 
 

@@ -103,6 +103,7 @@ void SyntaxParser::handle(std::shared_ptr<Token> t) {
 
 std::shared_ptr<SyntaxTree> SyntaxParser::collapse_quotes(std::shared_ptr<SyntaxTree> subtree) {
     while(!_varstack.empty()) {
+        if(_varstack.top()->get_id() != SyntaxTreeId::ST_TOKEN) return subtree;
         auto token = _varstack.top()->bound_token();
         if(token->get_id()==TokenId::T_QUOTE) {
             _varstack.pop();

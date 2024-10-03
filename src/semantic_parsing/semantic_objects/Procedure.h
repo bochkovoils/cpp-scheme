@@ -15,17 +15,18 @@
 class Procedure: public SemanticObject {
 private:
     std::shared_ptr<Expression>                     _body;
-    std::vector<std::shared_ptr<SemanticObject>>    _parameters;
+    std::vector<std::shared_ptr<FnParameter>>    _parameters;
     bool                                            _dot_notation;
 public:
     explicit Procedure(std::shared_ptr<Expression> body,
-                       std::vector<std::shared_ptr<SemanticObject>>& parameters,
-                       bool dot_notation=false): _body(std::move(body)), _parameters(parameters), _dot_notation(dot_notation) {}
+                       std::vector<std::shared_ptr<FnParameter>> parameters,
+                       bool dot_notation=false): _body(std::move(body)), _parameters(std::move(parameters)), _dot_notation(dot_notation) {}
     std::shared_ptr<Expression>                     body() {return _body;}
-    std::vector<std::shared_ptr<SemanticObject>>    parameters() {return _parameters;}
+    std::vector<std::shared_ptr<FnParameter>>    parameters() {return _parameters;}
     std::size_t                                     arity() {return _parameters.size();}
     bool                                            dot_notation() const {return _dot_notation;}
     std::string apply_logger(SemanticLogger *logger, std::string &spaces) override;
+    SEMANTIC_WALKER_VISITOR_WALK
 };
 
 

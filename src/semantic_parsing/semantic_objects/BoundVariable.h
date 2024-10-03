@@ -18,6 +18,8 @@ public:
     BoundVariable(std::size_t id, std::shared_ptr<Token> token);
     std::string apply_logger(SemanticLogger* logger, std::string& spaces) override;
     std::size_t get_symbol_id() const {return _id;}
+    SEMANTIC_WALKER_VISITOR_WALK
+
 };
 
 

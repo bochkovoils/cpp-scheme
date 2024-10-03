@@ -27,13 +27,16 @@ std::string CodePrinter::get(std::shared_ptr<ByteCode> code_) {
             case Opcode::LOAD:
                 ss << "LOAD " << std::to_string(code[++index]);
                 break;
-            case Opcode::PUSH:
-                ss << "PUSH " << std::to_string(code[++index]);
+            case Opcode::PUSH_NUMBER:
+                ss << "PUSH_NUMBER " << std::to_string(code[++index]);
                 break;
             case Opcode::NOOP:
                 break;
             case Opcode::CALL:
                 ss << "CALL";
+                break;
+            case Opcode::BRACKET:
+                ss << "BRACKET";
                 break;
         }
         ss << "\n";

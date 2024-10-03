@@ -15,7 +15,15 @@ std::string Expression::apply_logger(SemanticLogger *logger, std::string &spaces
     return logger->get(this, spaces);
 }
 
-std::vector<std::shared_ptr<SemanticObject>> Expression::elements() {
+std::vector<std::shared_ptr<SemanticObject>>& Expression::elements() {
     return _objs;
+}
+
+std::vector<std::shared_ptr<SemanticObject>> Expression::args() {
+    return {_objs.begin()+1, _objs.end()};
+}
+
+std::shared_ptr<SemanticObject> Expression::head() {
+    return _objs[0];
 }
 

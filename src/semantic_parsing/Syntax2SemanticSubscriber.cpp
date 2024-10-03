@@ -10,5 +10,10 @@ void Syntax2SemanticSubscriber::handle(std::shared_ptr<SyntaxTree> o) {
     auto res = _so->parse(o);
     auto logger = SemanticLogger();
     auto spaces = std::string("");
+//    std::cout << res->apply_logger(&logger, spaces) << std::endl;
+
+    auto collector = std::make_shared<SymbolsCollector>();
+    res->apply_walker(collector.get());
     std::cout << res->apply_logger(&logger, spaces) << std::endl;
+    emit(res);
 }

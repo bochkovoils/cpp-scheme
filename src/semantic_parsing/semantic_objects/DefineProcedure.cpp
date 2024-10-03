@@ -7,9 +7,11 @@
 #include <utility>
 
 DefineProcedure::DefineProcedure(std::size_t symbol_id,
+//                                 std::vector<std::shared_ptr<FnParameter>> parameters,
                                  std::shared_ptr<Procedure> procedure,
                                  std::shared_ptr<Token> token)
                                  :  _symbol_id(symbol_id),
+//                                    _parameters(std::move(parameters)),
                                     _procedure(std::move(procedure)),
                                     _t(std::move(token)) {
 

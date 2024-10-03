@@ -75,3 +75,15 @@ LispObjectRef &LispObjectRef::operator=(MovRef mv) {
     return *this;
 }
 
+void LispObjectRef::replace(LispObjectRef ref) {
+    (*_counter)--;
+    if(*_counter == 0) {
+        delete _counter;
+        delete _ptr;
+    }
+
+    _counter = ref._counter;
+    _ptr = ref._ptr;
+    (*_counter)++;
+}
+

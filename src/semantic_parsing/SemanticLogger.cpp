@@ -16,7 +16,7 @@ std::string SemanticLogger::get(If *o, std::string& spaces) {
         onfalse = o->on_false()->apply_logger(this, newspaces);
 
     std::stringstream ss;
-    ss  << spaces   << "IF:\n"
+    ss  << spaces   << "IF:  " << get_parameters(o) << "\n"
                     << cond
                     << ontrue
                     << onfalse;
@@ -39,7 +39,7 @@ std::string SemanticLogger::get(Expression *o, std::string &s) {
     auto newspaces = s + "    ";
     auto elems = o->elements();
     std::stringstream ss;
-    ss << s << "EXPRESSION:\n";
+    ss << s << "EXPRESSION:   " << get_parameters(o) << "\n";
     std::for_each(elems.begin(), elems.end(), [this, &ss, &newspaces](auto o){
         ss << o->apply_logger(this, newspaces);
     });
@@ -64,7 +64,7 @@ std::string SemanticLogger::get(DefineProcedure *o, std::string &s) {
     auto argspaces = s + "    ";
     auto newspaces =  argspaces + "    ";
     std::stringstream ss;
-    ss << s+"DEFPROC: " << SymbolicTable::get().get_symbol(o->get_symbol_id()) << "\n";
+    ss << s+"DEFPROC: " << SymbolicTable::get().get_symbol(o->get_symbol_id()) << "    " << get_parameters(o) << "\n";
     ss << o->get_procedure()->apply_logger(this, argspaces);
     return ss.str();
 }
@@ -73,7 +73,7 @@ std::string SemanticLogger::get(Procedure *o, std::string &s) {
     auto argspaces = s + "    ";
     auto newspaces =  argspaces + "    ";
     std::stringstream ss;
-    ss << s << "PROCEDURE:\n";
+    ss << s << "PROCEDURE:    " << get_parameters(o) << "\n";
     ss << argspaces << "ISDOT: " << o->dot_notation() << "\n";
     ss << argspaces << "PARAMETERS:\n";
     auto params = o->parameters();
@@ -89,4 +89,22 @@ std::string SemanticLogger::get(Procedure *o, std::string &s) {
 std::string SemanticLogger::get(Quote *o, std::string &s) {
     InlinePainter sm;
     return s + std::string("QUOTE: ") + o->get_object()->to_string(&sm) + "\n";
+}
+
+std::string SemanticLogger::get_parameters(SemanticObject *o) {
+    std::stringstream ss;
+    auto params = o->symbols_table().required_symbols();
+    ss << "{";
+    std::for_each(params.begin(), params.end(), [&ss](std::size_t s){
+        ss << SymbolicTable::get().get_symbol(s) << ",";
+    });
+    ss << "}";
+
+    auto init = o->symbols_table().initialized_symbols();
+    ss << "[";
+    std::for_each(init.begin(), init.end(), [&ss](std::size_t s){
+        ss << "," << SymbolicTable::get().get_symbol(s);
+    });
+    ss << "]";
+    return ss.str();
 }

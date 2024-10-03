@@ -19,6 +19,7 @@ public:
     virtual std::string apply_logger(SemanticLogger* logger, std::string& spaces);
 
     [[nodiscard]] std::size_t get_symbol_id() const {return _symbol_id;}
+    SEMANTIC_WALKER_VISITOR_WALK
 };
 
 

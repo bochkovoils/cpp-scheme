@@ -18,6 +18,7 @@ public:
     Number(int value, std::shared_ptr<Token> token);
     std::string apply_logger(SemanticLogger* logger, std::string& spaces) override;
     int get_value() {return _value;}
+    SEMANTIC_WALKER_VISITOR_WALK
 };
 
 

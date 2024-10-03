@@ -15,6 +15,7 @@ private:
     std::vector<std::size_t>    _labels;
 
 public:
+    ByteCode() = default;
     ByteCode(std::vector<std::size_t>& data, std::vector<std::size_t>& labels): _data(data), _labels(labels){};
     ByteCode(std::vector<OpcodeObject>::iterator begin, std::vector<OpcodeObject>::iterator end);
     std::size_t operator[](std::size_t const &);

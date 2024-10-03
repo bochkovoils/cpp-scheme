@@ -13,7 +13,8 @@
 #include "semantic_objects/SemanticObject.h"
 #include "SemanticParser.h"
 
-class Syntax2SemanticSubscriber: public Observer<std::shared_ptr<SyntaxTree>> {
+class Syntax2SemanticSubscriber: public Observer    <std::shared_ptr<SyntaxTree>>,
+                                 public Observable  <std::shared_ptr<SemanticObject>> {
 private:
     std::shared_ptr<SemanticParser> _so;
 public:

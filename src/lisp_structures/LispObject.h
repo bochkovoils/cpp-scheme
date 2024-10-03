@@ -18,7 +18,8 @@ enum LispObjectId {
     L_NUMBER,
     L_STRING,
     L_SYMBOL,
-    L_OPERATION
+    L_OPERATION,
+    L_BRACKET
 };
 
 class LispObject {

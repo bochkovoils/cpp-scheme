@@ -25,9 +25,9 @@ public:
     std::shared_ptr<SemanticObject> parse_cond(std::vector<std::shared_ptr<SyntaxTree>>& vector1);
     std::shared_ptr<Expression>     parse_expression(std::vector<std::shared_ptr<SyntaxTree>>& vector1,
                                                      std::shared_ptr<Token> t);
-    std::shared_ptr<SemanticObject> parse_parameter(std::shared_ptr<SyntaxTree> ptr,
+    std::shared_ptr<FnParameter> parse_parameter(std::shared_ptr<SyntaxTree> ptr,
                                                     std::shared_ptr<Token> t);
-    std::pair<std::vector<std::shared_ptr<SemanticObject>>, bool>
+    std::pair<std::vector<std::shared_ptr<FnParameter>>, bool>
     parse_parameters(std::vector<std::shared_ptr<SyntaxTree>>& params);
 
 

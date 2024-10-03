@@ -21,7 +21,7 @@ public:
     std::size_t get_symbol_id() const;
     std::shared_ptr<SemanticObject> get_eval_expression();
     std::string apply_logger(SemanticLogger* logger, std::string& spaces);
-
+    SEMANTIC_WALKER_VISITOR_WALK
 };
 
 

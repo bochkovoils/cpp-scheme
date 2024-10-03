@@ -7,6 +7,7 @@
 
 
 #include "LispObject.h"
+#include "../machine/EvalObject.h"
 
 struct MovRef;
 
@@ -26,6 +27,7 @@ public:
     LispObject* operator->();
     LispObject* get();
     LispObjectId get_type() { return _ptr->get_type(); };
+    void replace(LispObjectRef ref);
 
     bool empty() const;
 

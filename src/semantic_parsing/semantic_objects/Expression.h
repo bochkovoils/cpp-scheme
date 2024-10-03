@@ -17,7 +17,10 @@ private:
 public:
     Expression(std::vector<std::shared_ptr<SemanticObject>>& objs, std::shared_ptr<Token> token);
     std::string apply_logger(SemanticLogger* logger, std::string& spaces) override;
-    std::vector<std::shared_ptr<SemanticObject>>    elements();
+    std::vector<std::shared_ptr<SemanticObject>>&    elements();
+    std::shared_ptr<SemanticObject>                  head();
+    std::vector<std::shared_ptr<SemanticObject>>     args();
+    SEMANTIC_WALKER_VISITOR_WALK
 };
 
 

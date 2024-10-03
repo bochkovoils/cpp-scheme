@@ -146,9 +146,9 @@ std::shared_ptr<Expression> SemanticParser::parse_expression(std::vector<std::sh
     return std::make_shared<Expression>(res, std::move(t));
 }
 
-std::pair<std::vector<std::shared_ptr<SemanticObject>>, bool>
+std::pair<std::vector<std::shared_ptr<FnParameter>>, bool>
 SemanticParser::parse_parameters(std::vector<std::shared_ptr<SyntaxTree>> &params) {
-    auto res = std::vector<std::shared_ptr<SemanticObject>>();
+    auto res = std::vector<std::shared_ptr<FnParameter>>();
     for(int i=0; i<params.size(); i++) {
         if(params[i]->get_id() != SyntaxTreeId::ST_ATOM)
             throw 13;
@@ -174,7 +174,7 @@ SemanticParser::parse_parameters(std::vector<std::shared_ptr<SyntaxTree>> &param
     return std::make_pair(res, false);
 }
 
-std::shared_ptr<SemanticObject> SemanticParser::parse_parameter(std::shared_ptr<SyntaxTree> ptr,
+std::shared_ptr<FnParameter> SemanticParser::parse_parameter(std::shared_ptr<SyntaxTree> ptr,
                                                                 std::shared_ptr<Token> t) {
-    return std::shared_ptr<SemanticObject>(new FnParameter(ptr->bound_token()->get_symbol_id(), std::move(t)));
+    return std::make_shared<FnParameter>(ptr->bound_token()->get_symbol_id(), std::move(t));
 }

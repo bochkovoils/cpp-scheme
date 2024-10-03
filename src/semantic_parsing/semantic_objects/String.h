@@ -19,6 +19,7 @@ public:
     String(std::string string, std::shared_ptr<Token> token);
     std::string apply_logger(SemanticLogger* logger, std::string& spaces) override;
     std::string get_string() {return _string;}
+    SEMANTIC_WALKER_VISITOR_WALK
 };
 
 

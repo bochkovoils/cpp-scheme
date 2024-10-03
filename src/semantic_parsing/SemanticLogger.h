@@ -29,6 +29,8 @@ public:
     std::string get(DefineProcedure* o,      std::string& s);
     std::string get(Procedure* o,      std::string& s);
     std::string get(Quote* o,      std::string& s);
+
+    std::string get_parameters(SemanticObject*);
 };
 
 #endif //CPP_SCHEME_SEMANTICLOGGER_H

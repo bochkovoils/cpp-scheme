@@ -19,6 +19,7 @@ public:
 
     LispObjectRef get_object() { return _obj; }
     std::string apply_logger(SemanticLogger *logger, std::string &spaces) override;
+    SEMANTIC_WALKER_VISITOR_WALK
 };
 
 
